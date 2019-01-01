@@ -1,5 +1,3 @@
-package github.com.crazyStrongboy;
-
 import github.com.crazyStrongboy.annotation.RpcAnnotation;
 
 /**

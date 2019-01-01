@@ -1,5 +1,3 @@
-package github.com.crazyStrongboy;
-
 import github.com.crazyStrongboy.client.JdkRpcClientProxy;
 import github.com.crazyStrongboy.client.RpcClientProxy;
 import github.com.crazyStrongboy.discovery.ServiceDiscovery;

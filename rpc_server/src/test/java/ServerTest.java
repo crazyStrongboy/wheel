@@ -1,5 +1,3 @@
-package github.com.crazyStrongboy;
-
 import github.com.crazyStrongboy.registry.RegistryCenter;
 import github.com.crazyStrongboy.registry.ZookeeperRegistryCenter;
 import github.com.crazyStrongboy.server.RpcServer;
