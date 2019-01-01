@@ -19,4 +19,4 @@ Client:
     RpcClientProxy rpcClient = new JdkRpcClientProxy(discovery);
     Hello hello = rpcClient.create(Hello.class);
     //3. Rpc invoke
-    String respond = hello.sayHello("stupid");
+    String respond = hello.sayHello("stupid"); 
