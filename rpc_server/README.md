@@ -1,6 +1,6 @@
 This is a simple rpc framework rudiment!
 
-Server:
+    Server:
         //1.The first step is to have a registry
         RegistryCenter registry = new ZookeeperRegistryCenter();
         //2. The second step is to have a rpcServer
@@ -12,7 +12,7 @@ Server:
         rpcServer.publish();
     
     
-Client:
+    Client:
         //1.The first step is to have a discovery node
         ServiceDiscovery discovery = new ZookeeperServiceDiscovery();
         //2.The second step is to create a instance,this can connect server
