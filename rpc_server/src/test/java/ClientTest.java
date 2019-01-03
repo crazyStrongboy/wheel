@@ -15,13 +15,13 @@ public class ClientTest {
         String respond = hello.sayHello("stupid");
         System.err.println(respond);
         // 测试不存在的服务
-        Driver driver = rpcClient.create(Driver.class);
-        String r = null;
-        try {
-            r = driver.driving("faster");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.err.println(r);
+//        Driver driver = rpcClient.create(Driver.class);
+//        String r = null;
+//        try {
+//            r = driver.driving("faster");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        System.err.println(r);
     }
 }

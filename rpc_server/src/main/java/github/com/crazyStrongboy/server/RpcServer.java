@@ -54,7 +54,7 @@ public class RpcServer {
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast("encode",new ObjectEncoder());
                             pipeline.addLast("decode",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
-                            pipeline.addLast(new RpcHandler(handlers));
+                            pipeline.addLast(new RpcProtoHandler(handlers));
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)

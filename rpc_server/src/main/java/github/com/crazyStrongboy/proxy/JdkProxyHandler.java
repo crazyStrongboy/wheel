@@ -3,6 +3,7 @@ package github.com.crazyStrongboy.proxy;
 import github.com.crazyStrongboy.bean.RpcRequest;
 import github.com.crazyStrongboy.client.RpcClientHandler;
 import github.com.crazyStrongboy.discovery.ServiceDiscovery;
+import github.com.crazyStrongboy.proto.RRequest;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -29,12 +30,20 @@ public class JdkProxyHandler implements InvocationHandler {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        RpcRequest request = new RpcRequest();
-        request.setClassName(method.getDeclaringClass().getName());
-        request.setMethodName(method.getName());
-        request.setParams(args);
-        request.setTypes(method.getParameterTypes());
-
+        Class<?>[] parameterTypes = method.getParameterTypes();
+//        RpcRequest request = new RpcRequest();
+//        request.setClassName(method.getDeclaringClass().getName());
+//        request.setMethodName(method.getName());
+//        request.setParams(args);
+//        request.setTypes(parameterTypes);
+        RRequest.Request.Builder builder = RRequest.Request.newBuilder();
+        builder.setClassName(method.getDeclaringClass().getName());
+        builder.setMethodName(method.getName());
+        for (int i = 0; i < args.length; i++) {
+            builder.addParams(String.valueOf(args[i]));
+            builder.addTypes(parameterTypes[i].getTypeName());
+        }
+        RRequest.Request request = builder.build();
         String address = this.serviceDiscovery.discovery(object.getName());
         System.err.println("discovery service ...." + address);
         if (address == null) {
@@ -46,7 +55,7 @@ public class JdkProxyHandler implements InvocationHandler {
         return rpcClientHandler.getResponse();
     }
 
-    private void nettyInvoke(String address, RpcRequest request, final RpcClientHandler rpcClientHandler) {
+    private void nettyInvoke(String address, RRequest.Request request, final RpcClientHandler rpcClientHandler) {
 
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {

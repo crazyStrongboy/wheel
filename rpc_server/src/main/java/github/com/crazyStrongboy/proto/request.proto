@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package github.com.crazyStrongboy.proto;
+option java_outer_classname = "RRequest";
+
+message Request {
+    required string className = 1;
+
+    repeated string params = 2;
+
+    repeated string types = 3;
+
+    required string methodName = 4;
+}
