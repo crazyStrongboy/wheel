@@ -8,7 +8,7 @@ import github.com.crazyStrongboy.annotation.RpcAnnotation;
 @RpcAnnotation(Hello.class)
 public class HelloImpl implements Hello {
 
-    public String sayHello(String msg) {
-        return "hello , " + msg;
+    public String sayHello(String msg, Integer age) {
+        return "hello , " + msg + "age: " + age;
     }
 }

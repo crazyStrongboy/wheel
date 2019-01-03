@@ -44,6 +44,7 @@ public class RpcProtoHandler extends ChannelInboundHandlerAdapter {
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         System.out.println(cause);
         super.exceptionCaught(ctx, cause);
+        ctx.close();
     }
 
     @Override
@@ -53,14 +54,21 @@ public class RpcProtoHandler extends ChannelInboundHandlerAdapter {
         String className = request.getClassName();
         if (handlers.containsKey(className)) {
             Object object = handlers.get(className);
+            Object[] params = new Object[request.getTypesCount()];
             Class<?>[] parameterTypes = new Class[request.getTypesCount()];
             int i = 0;
             for (String type : request.getTypesList()) {
-                parameterTypes[i] = Class.forName(type);
+                Class<?> aClass = Class.forName(type);
+                parameterTypes[i] = aClass;
+                if (aClass.isAssignableFrom(Integer.class)){
+                    params[i] = Integer.parseInt(request.getParamsList().toArray()[i].toString());
+                }else {
+                    params[i] = request.getParamsList().toArray()[i];
+                }
                 i++;
             }
             Method method = object.getClass().getMethod(request.getMethodName(), parameterTypes);
-            result = method.invoke(object, request.getParamsList().toArray());
+            result = method.invoke(object, params);
         } else {
             result = "has no support method !";
         }

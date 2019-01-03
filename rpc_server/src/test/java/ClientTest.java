@@ -12,7 +12,7 @@ public class ClientTest {
         ServiceDiscovery discovery = new ZookeeperServiceDiscovery();
         RpcClientProxy rpcClient = new JdkRpcClientProxy(discovery);
         Hello hello = rpcClient.create(Hello.class);
-        String respond = hello.sayHello("stupid");
+        String respond = hello.sayHello("stupid",30);
         System.err.println(respond);
         // 测试不存在的服务
 //        Driver driver = rpcClient.create(Driver.class);

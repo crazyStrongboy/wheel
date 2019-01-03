@@ -3,5 +3,5 @@
  * @version 2019/1/1 12:30
  */
 public interface Hello {
-    String sayHello(String msg);
+    String sayHello(String msg,Integer age);
 }
