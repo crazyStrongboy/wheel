@@ -1,8 +1,6 @@
 package github.com.crazyStrongboy.dispatcher;
 
-import github.com.crazyStrongboy.annotation.SController;
-import github.com.crazyStrongboy.annotation.SRequestMapping;
-import github.com.crazyStrongboy.annotation.SRequestParam;
+import github.com.crazyStrongboy.annotation.*;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -12,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.net.URL;
@@ -118,7 +117,26 @@ public class SDispatcherServlet extends HttpServlet {
     }
 
     private void autowireProperty() {
-
+        for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            Field[] fields = entry.getValue().getClass().getDeclaredFields();
+            for (Field field : fields)
+                if (field.isAnnotationPresent(SAutowired.class)) {
+                    SAutowired sAutowired = field.getAnnotation(SAutowired.class);
+                    String simpleName = "";
+                    if ("".equals(sAutowired.value())) {
+                        simpleName = field.getType().getSimpleName();
+                        simpleName = lowerCaseFirstLetter(simpleName);
+                    } else {
+                        simpleName = sAutowired.value();
+                    }
+                    field.setAccessible(true);
+                    try {
+                        field.set(entry.getValue(), ioc.get(simpleName));
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
     }
 
     private void createBeans() {
@@ -128,12 +146,31 @@ public class SDispatcherServlet extends HttpServlet {
                 if (this.getClass().forName(className).isAnnotationPresent(SController.class)) {
                     Object instance = this.getClass().forName(className).newInstance();
                     String name = instance.getClass().getSimpleName();
-                    ioc.put(lowerCaseFirstLetter(name), instance);
+                    addIoc(lowerCaseFirstLetter(name), instance);
+                }
+                if (this.getClass().forName(className).isAnnotationPresent(SService.class)) {
+                    Object instance = this.getClass().forName(className).newInstance();
+                    Class<?>[] interfaces = instance.getClass().getInterfaces();
+                    for (Class<?> anInterface : interfaces) {
+                        String simpleName = anInterface.getSimpleName();
+                        addIoc(lowerCaseFirstLetter(simpleName), instance);
+                    }
+                    SService sService = instance.getClass().getAnnotation(SService.class);
+                    if (!"".equals(sService.value())) {
+                        addIoc(sService.value(), instance);
+                    }
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void addIoc(String name, Object instance) {
+        if (ioc.containsKey(name)) {
+            throw new RuntimeException("can,t register name ," + name + ", old instance :" + instance.getClass().getName());
+        }
+        ioc.put(name, instance);
     }
 
     private String lowerCaseFirstLetter(String str) {
