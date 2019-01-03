@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.*;
 
 public class SDispatcherServlet extends HttpServlet {
-    String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
+    private static final String CLASSPATH_ALL_URL_PREFIX = "classpath*:";
     private Properties properties = new Properties();
     private Set<String> classNames = new HashSet<>();
     private Map<String, Object> ioc = new HashMap<>();
@@ -38,25 +38,40 @@ public class SDispatcherServlet extends HttpServlet {
                 Parameter[] parameters = method.getParameters();
                 Map<String, String[]> parameterMap = req.getParameterMap();
 
-                List<Object> params = new ArrayList<>();
+                Object[] params = new Object[parameters.length];
+                int i = -1;
+                // 依次给参数赋值
                 for (Parameter parameter : parameters) {
+                    i++;
                     boolean match = false;
+                    //isAssignableFrom 是用来判断一个类Class1和另一个类Class2是否相同或是另一个类的超类或接口。
+                    //通常调用格式是
+                    //Class1.isAssignableFrom (Class2)
+                    if (parameter.getType().isAssignableFrom(HttpServletRequest.class)) {
+                        params[i] = req;
+                        continue;
+                    }
+                    if (parameter.getType().isAssignableFrom(HttpServletResponse.class)) {
+                        params[i] = resp;
+                        continue;
+                    }
                     if (parameter.isAnnotationPresent(SRequestParam.class)) {
                         SRequestParam sRequestParam = parameter.getAnnotation(SRequestParam.class);
                         for (Map.Entry<String, String[]> paramMap : parameterMap.entrySet()) {
                             if (paramMap.getKey().equals(sRequestParam.value())) {
                                 String param = paramMap.getValue()[0];
-                                params.add(param);
+                                params[i] = param;
                                 match = true;
+                                break;
                             }
                         }
                     }
                     if (!match) {
-                        params.add("");
+                        params[i] = "";
                     }
                 }
                 String className = method.getDeclaringClass().getSimpleName();
-                Object result = method.invoke(ioc.get(lowerCaseFirstLetter(className)), params.toArray());
+                Object result = method.invoke(ioc.get(lowerCaseFirstLetter(className)), params);
                 resp.getWriter().write(result.toString());
             } else {
                 resp.getWriter().write("404 NOT FOUND!!!");
@@ -168,8 +183,9 @@ public class SDispatcherServlet extends HttpServlet {
 
     private void addIoc(String name, Object instance) {
         if (ioc.containsKey(name)) {
-            throw new RuntimeException("can,t register name ," + name + ", old instance :" + instance.getClass().getName());
+            throw new RuntimeException("can't register name ," + name + ", old instance :" + ioc.get(name).getClass().getName());
         }
+        System.out.println("add ioc " + name + "----->" + instance.getClass().getName());
         ioc.put(name, instance);
     }
 
@@ -186,7 +202,6 @@ public class SDispatcherServlet extends HttpServlet {
             File file = new File(path);
             for (File listFile : file.listFiles()) {
                 if (listFile.isDirectory()) {
-                    System.out.println(listFile);
                     scanPackages(scanPackages + "." + listFile.getName());
                     continue;
                 }
