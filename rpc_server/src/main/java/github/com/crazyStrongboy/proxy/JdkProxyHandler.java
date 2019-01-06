@@ -5,6 +5,8 @@ import github.com.crazyStrongboy.client.RpcClientHandler;
 import github.com.crazyStrongboy.discovery.ServiceDiscovery;
 import github.com.crazyStrongboy.proto.RRequest;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -78,7 +80,11 @@ public class JdkProxyHandler implements InvocationHandler {
             ChannelFuture f = b.connect(ipPort[0], Integer.parseInt(ipPort[1])).sync();
 
             // 将请求写过去
+//            ByteBuf buffer = Unpooled.buffer();
+//            buffer.writeBytes("aa".getBytes());
+            //TODO 简单的测试发现应该有数据格式的限制，发送对象需要添加编解码handler,后期进行研究
             f.channel().writeAndFlush(request);
+//            f.channel().writeAndFlush(buffer);
             // Wait until the connection is closed.（阻塞方法）
             f.channel().closeFuture().sync();
         } catch (Exception e) {
