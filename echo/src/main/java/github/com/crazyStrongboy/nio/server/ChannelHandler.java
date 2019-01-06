@@ -1,7 +1,7 @@
 package github.com.crazyStrongboy.nio.server;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -10,38 +10,41 @@ import java.nio.channels.SocketChannel;
  */
 public class ChannelHandler implements Runnable {
 
-    private SocketChannel channel;
-    private boolean flag = true;
+    private SelectionKey readKey;
 
-    public ChannelHandler(SocketChannel channel) {
-        this.channel = channel;
+    public ChannelHandler(SelectionKey readKey) {
+        this.readKey = readKey;
     }
 
     @Override
     public void run() {
         ByteBuffer buffer = ByteBuffer.allocate(50);
+        SocketChannel clientSocketChannel = (SocketChannel) this.readKey.channel();
         try {
-            while (this.flag) {
-                buffer.clear();
-                int readCount = this.channel.read(buffer);
-                String readMsg = new String(buffer.array(), 0, readCount).trim();
-                String writeMsg = "NIO: " + readMsg;
-                if ("byebye".equalsIgnoreCase(readMsg)) {
-                    writeMsg = "byebye!";
-                    flag = false;
-                }
-                buffer.clear();
-                buffer.put(writeMsg.getBytes());
-                buffer.flip();
-                this.channel.write(buffer);
-            }
+//            buffer.clear();
+//            int readCount = clientSocketChannel.read(buffer);
+//            if (readCount <= 0) {
+//                clientSocketChannel.close();
+//                this.readKey.cancel();
+//                return;
+//            }
+//            buffer.flip();
+//            String readMsg = new String(buffer.array(), 0, readCount).trim();
+//            String writeMsg = "NIO: " + readMsg;
+//            if ("byebye".equalsIgnoreCase(readMsg)) {
+//                writeMsg = "byebye!";
+//            }
+//            buffer.clear();
+//            buffer.put(writeMsg.getBytes());
+//            buffer.flip();
+//            clientSocketChannel.write(buffer);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
             try {
-                channel.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+                clientSocketChannel.close();
+                this.readKey.cancel();
+            } catch (Exception ee) {
+                ee.printStackTrace();
             }
         }
     }
