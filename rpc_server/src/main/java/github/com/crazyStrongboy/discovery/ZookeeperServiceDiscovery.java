@@ -2,7 +2,7 @@ package github.com.crazyStrongboy.discovery;
 
 import github.com.crazyStrongboy.config.ZookeeperConfig;
 import github.com.crazyStrongboy.loadbalance.LoadBalance;
-import github.com.crazyStrongboy.loadbalance.RandomLoadBalance;
+import github.com.crazyStrongboy.loadbalance.RandomLoadBalanceStrategy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.PathChildrenCache;
@@ -44,7 +44,7 @@ public class ZookeeperServiceDiscovery implements ServiceDiscovery {
         //register watch
         registerWatch(servicePath);
 
-        LoadBalance loadBalance = new RandomLoadBalance();
+        LoadBalance loadBalance = new RandomLoadBalanceStrategy();
         return loadBalance.getAccessService(handlers);
     }
 
