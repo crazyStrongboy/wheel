@@ -52,6 +52,7 @@ public class RpcServer {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
+                            // 这里可以实现自定义的编码器
                             pipeline.addLast("encode",new ObjectEncoder());
                             pipeline.addLast("decode",new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
                             pipeline.addLast(new RpcProtoHandler(handlers));
