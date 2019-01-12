@@ -8,12 +8,15 @@ import github.com.crazyStrongboy.discovery.ZookeeperServiceDiscovery;
  * @version 2019/1/1 15:02
  */
 public class ClientTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ServiceDiscovery discovery = new ZookeeperServiceDiscovery();
         RpcClientProxy rpcClient = new JdkRpcClientProxy(discovery);
         Hello hello = rpcClient.create(Hello.class);
-        String respond = hello.sayHello("stupid",30);
-        System.err.println(respond);
+        for (int i = 0; i < 20; i++) {
+            String respond = hello.sayHello("stupid", 30);
+            System.err.println(respond);
+            Thread.sleep(4000);
+        }
         // 测试不存在的服务
 //        Driver driver = rpcClient.create(Driver.class);
 //        String r = null;
