@@ -5,9 +5,13 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.EventExecutor;
+import io.netty.util.concurrent.Future;
+
+import java.util.Iterator;
 
 public class NettyServer {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -25,7 +29,23 @@ public class NettyServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture future = bootstrap.bind(Global.PORT).sync();
             System.err.println("服务端开始监听。。。。" + Global.PORT);
-            future.channel().closeFuture().sync();
+            // 测试terminationListener
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Iterator<EventExecutor> boosIterator = bossGroup.iterator();
+                while (boosIterator.hasNext()) {
+                    EventExecutor next = boosIterator.next();
+                    next.shutdownGracefully();
+                }
+            }).start();
+            Future<?> terminationFuture = bossGroup.terminationFuture();
+            System.err.println(terminationFuture.get());
+            ChannelFuture sync = future.channel().closeFuture().sync();
+            System.err.println(sync.get());
         } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
