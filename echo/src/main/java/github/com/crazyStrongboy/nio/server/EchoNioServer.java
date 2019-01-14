@@ -42,7 +42,7 @@ public class EchoNioServer {
                         ByteBuffer buffer = ByteBuffer.allocate(50);
                         SocketChannel clientSocketChannel = (SocketChannel) selectionKey.channel();
                         // 通过测试发现，这里必须要将channel缓冲中的数据读出来了。
-                        //这里猜测是selector.selectedKeys();这里会遍历所有通道中是否有缓存的数据来觉得read事件
+                        //这里猜测是selector.selectedKeys();这里会遍历所有通道中是否有缓存的数据来决定read事件
                         int readCount = clientSocketChannel.read(buffer);
                         if (readCount <= 0) {
                             clientSocketChannel.close();
