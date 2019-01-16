@@ -1,0 +1,62 @@
+﻿declared  [dɪ'kleəd] 公开的
+as well as 以及
+perform 执行,表演
+candicate 候选人
+relevant 有关的
+unwrap 打开
+stereotype 老套,陈旧
+hint 暗示
+internal 内部的
+manual 手册
+phase 时期
+derive 源于
+triggering 触发
+suppose 假设
+
+canonicalName 规范名称 
+placeholder 占位符
+lifecycle 生命周期
+introspection 内省
+
+appropriate 适当的，合适的
+mechanism 机制
+utilize 运用，使用
+constraint 约束
+impose 强加
+elaborate 精心制作的
+complementary 互补的
+relevance 相关性
+paradigm 范式
+assembly 装配
+evolve 进化，演变，发展
+compact 紧凑的
+delve 专研
+programming 程序设计
+demonstrate 论证
+intricacies 繁冗的
+quirk 怪癖
+unadorned 朴素的，纯粹的
+simultaneous 同步的
+trivial 不重要的
+scenario 方案
+encapsulate 封装
+preeminent 卓越的
+harnessing 利用
+robustness 健壮性
+collaborate 合作
+interaction 相互作用，交互
+symbiotic 共生的
+entire up to 完全取决于
+terminology 术语
+remainder  剩余部分
+identical 相同的
+paradigm 范例
+jeopardize 危害
+embody 体现
+propagate 传播
+encounter 遭遇
+compromise 妥协
+legacy 遗留
+port 有移植的意思吧
+matrix 矩阵
+mention 提及
