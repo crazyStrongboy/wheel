@@ -1,0 +1,115 @@
+apply plugin: 'com.google.protobuf'
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = "github.com.crazyStrongboy.Bootstrap"
+
+group rootProject.ext.buildInfo.test_group
+version rootProject.ext.buildInfo.test_version
+
+sourceCompatibility = 1.8
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+    }
+    dependencies {
+        classpath "com.google.protobuf:protobuf-gradle-plugin:${rootProject.ext.buildInfo.dependencies.protobufGradlePlugin}"
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    repositories {
+        mavenLocal()
+        maven {
+            url 'http://maven.aliyun.com/nexus/content/groups/public/'
+        }
+    }
+    /*compile(group: 'org.apache.curator', name: 'curator-recipes', version: "${rootProject.ext.buildInfo.dependencies.curator}") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'log4j', module: 'log4j'
+    }
+    compile(group: 'org.apache.zookeeper', name: 'zookeeper', version: "${rootProject.ext.buildInfo.dependencies.zookeeper}") {
+        exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+        exclude group: 'log4j', module: 'log4j'
+    }*/
+    compile group: 'io.grpc', name: 'grpc-all', version: "${rootProject.ext.buildInfo.dependencies.grpc}"
+}
+
+startScripts {
+    unixStartScriptGenerator.template = resources.text.fromFile("gradle_customized_scripts/unixScript.txt")
+}
+
+distZip {
+    into(project.name + '-' + project.version) {
+        from '.'
+        include 'config/*'
+    }
+
+    into(project.name + '-' + project.version) {
+        from '.'
+        include 'extLib/*'
+    }
+
+    into(project.name + '-' + project.version) {
+        from '.'
+        include 'dll/*'
+    }
+}
+
+distTar {
+    into(project.name + '-' + project.version) {
+        from '.'
+        include 'config/*'
+    }
+
+    into(project.name + '-' + project.version) {
+        from '.'
+        include 'extLib/*'
+    }
+
+    into(project.name + '-' + project.version) {
+        from '.'
+        include 'dll/*'
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java', 'src/generatedSource/main/java', 'src/generatedSource/main/grpc']
+        }
+        resources {
+            srcDirs = ['src/main/resources', 'config']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['src/test/java']
+        }
+        resources {
+            srcDirs = ['src/test/resources']
+        }
+    }
+}
+
+
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:${rootProject.ext.buildInfo.dependencies.protobuf}" }
+    plugins {
+        grpc {
+            artifact = "io.grpc:protoc-gen-grpc-java:${rootProject.ext.buildInfo.dependencies.grpc}"
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {
+            }
+        }
+    }
+    generatedFilesBaseDir = "${projectDir}/src/generatedSource"
+}

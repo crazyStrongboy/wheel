@@ -1,0 +1,7 @@
+apply plugin: 'java'
+apply from: 'config.gradle'
+
+group rootProject.ext.buildInfo.test_group
+version rootProject.ext.buildInfo.test_version
+
+sourceCompatibility = 1.8

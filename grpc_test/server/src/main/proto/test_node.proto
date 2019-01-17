@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "github.com.crazyStrongboy.node";
+option java_outer_classname = "TestNodes";
+option objc_class_prefix = "ETESTNODE";
+
+package data_node;
+
+service DataSyncService {
+
+    rpc sync (SyncRequest) returns (SyncResponse) {
+    }
+}
+
+message SyncRequest {
+    string apply = 1;
+}
+
+message SyncResponse {
+
+    string version = 1;
+
+}

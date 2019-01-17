@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "github.com.crazyStrongboy.stream";
+option java_outer_classname = "TestNodeStreams";
+option objc_class_prefix = "ETESTNODES";
+
+package data_node;
+
+service StreamService {
+
+    rpc streamRpc (stream StreamRequest) returns (stream StreamResponse) {
+    }
+}
+
+message StreamRequest {
+    string send = 1;
+}
+
+message StreamResponse {
+
+    string receive = 1;
+
+}

@@ -1,0 +1,13 @@
+ext {
+    buildInfo = [
+            test_group  : 'github.com.crazyStrongboy.grpc_test',
+            test_version : "1.0.0",
+            dependencies          : [
+                    grpc                : '1.16.1',
+                    protobuf            : '3.6.1',
+                    protobufGradlePlugin: '0.8.7',
+                    curator             : '4.0.1',
+                    zookeeper           : '3.5.4-beta',
+            ]
+    ]
+}
