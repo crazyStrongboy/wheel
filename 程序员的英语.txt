@@ -60,3 +60,21 @@ legacy 遗留
 port 有移植的意思吧
 matrix 矩阵
 mention 提及
+
+immutable 不可变的
+diagnostic 诊断
+propagate 传播
+sophisticated 精细的
+manipulation 操作
+underpinning 基础
+explicitly 明确地，明白地
+trade-off 权衡
+implicitly 含蓄地，暗中地
+tantamount 同等的
+gambling 赌博
+odds 胜算
+collaborative 合作的
+corruption 损坏，堕落
+bottleneck 瓶颈
+ongoing 进行的，前进的
+hinge on 取决于

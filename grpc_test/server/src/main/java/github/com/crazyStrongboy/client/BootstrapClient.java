@@ -10,6 +10,10 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.io.IOException;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -38,7 +42,6 @@ public class BootstrapClient {
             SyncRequest request = SyncRequest.newBuilder().setApply(name).build();
             SyncResponse response = blockingStub.sync(request);
             System.out.println("response:" + response.getVersion());
-            streamTest(name);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -49,7 +52,7 @@ public class BootstrapClient {
         StreamObserver<StreamResponse> streamObserver = new StreamObserver<StreamResponse>() {
             @Override
             public void onNext(StreamResponse value) {
-                System.err.println(value.getReceive());
+                System.err.println("streamTest : "+value.getReceive());
             }
 
             @Override
@@ -64,7 +67,7 @@ public class BootstrapClient {
         };
         StreamObserver<StreamRequest> requestStream = serviceStub.streamRpc(streamObserver);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 5; i++) {
             requestStream.onNext(StreamRequest.newBuilder().setSend(name).build());
             Thread.sleep(1000);
         }
