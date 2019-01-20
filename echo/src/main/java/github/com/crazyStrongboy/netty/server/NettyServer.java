@@ -12,7 +12,7 @@ import java.util.Iterator;
 
 public class NettyServer {
     public static void main(String[] args) throws Exception {
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
@@ -34,20 +34,20 @@ public class NettyServer {
             ChannelFuture future = bootstrap.bind(Global.PORT).sync();
             System.err.println("服务端开始监听。。。。" + Global.PORT);
             // 测试terminationListener
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Iterator<EventExecutor> boosIterator = bossGroup.iterator();
-                while (boosIterator.hasNext()) {
-                    EventExecutor next = boosIterator.next();
-                    next.shutdownGracefully();
-                }
-            }).start();
-            Future<?> terminationFuture = bossGroup.terminationFuture();
-            System.err.println(terminationFuture.get());
+//            new Thread(() -> {
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                Iterator<EventExecutor> boosIterator = bossGroup.iterator();
+//                while (boosIterator.hasNext()) {
+//                    EventExecutor next = boosIterator.next();
+//                    next.shutdownGracefully();
+//                }
+//            }).start();
+//            Future<?> terminationFuture = bossGroup.terminationFuture();
+//            System.err.println(terminationFuture.get());
             ChannelFuture sync = future.channel().closeFuture().sync();
             System.err.println(sync.get());
         } finally {

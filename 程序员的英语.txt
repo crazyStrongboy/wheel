@@ -32,7 +32,7 @@ evolve 进化，演变，发展
 compact 紧凑的
 delve 专研
 programming 程序设计
-demonstrate 论证
+demonstrate 论证，示范，演示
 intricacies 繁冗的
 quirk 怪癖
 unadorned 朴素的，纯粹的
@@ -41,7 +41,7 @@ trivial 不重要的
 scenario 方案
 encapsulate 封装
 preeminent 卓越的
-harnessing 利用
+harnessing 利用--harness应该有工具的含义
 robustness 健壮性
 collaborate 合作
 interaction 相互作用，交互
@@ -70,6 +70,7 @@ underpinning 基础
 explicitly 明确地，明白地
 trade-off 权衡
 implicitly 含蓄地，暗中地
+implications 含义
 tantamount 同等的
 gambling 赌博
 odds 胜算
@@ -78,3 +79,19 @@ corruption 损坏，堕落
 bottleneck 瓶颈
 ongoing 进行的，前进的
 hinge on 取决于
+
+compatible 兼容的
+necessitate 迫使
+isolate 隔离
+crop up 突然出现
+awry 错误的
+culprit 罪魁祸首
+facilitate 促进
+material 材料
+malformed 畸形的
+excessive 过多的，极度的
+traverse 遍历
+vaguely 模糊地，含糊地
+impact 影响
+guard 警惕
+commonplace 普通的事情，老生常谈的

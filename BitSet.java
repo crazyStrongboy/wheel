@@ -1,6 +1,3 @@
-package cn.eyecool.minisearch.memory;
-
-import cn.eyecool.minisearch.function.Consumer;
 
 public class BitSet {
 

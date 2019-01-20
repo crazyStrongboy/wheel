@@ -17,14 +17,15 @@ public class NettyClient {
                     .handler(new ChannelInitializer<Channel>() {
                         @Override
                         protected void initChannel(Channel ch) throws Exception {
-
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new ClientOutBoundHandler());
                         }
                     })
                     .option(ChannelOption.TCP_NODELAY, true);
             ChannelFuture future = bootstrap.connect(Global.CONNECT_HOST, Global.PORT).sync();
             ByteBuf buf =Unpooled.buffer();
             buf.writeBytes("dada".getBytes());
-            future.channel().writeAndFlush(buf);
+            future.channel().pipeline().writeAndFlush(buf);
             future.channel().closeFuture().sync();
         }finally {
             // 资源必须放在finally中关闭掉
