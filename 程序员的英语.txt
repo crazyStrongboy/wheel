@@ -102,3 +102,5 @@ esoteric 难懂的，秘传的
 take place 发生，举行，进行
 nested 嵌套的
 respectively 分别地，各自地
+
+envision 想象，预想
