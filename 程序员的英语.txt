@@ -116,3 +116,7 @@ encryption 加密
 decryption 解密
 leverage 利用
 squeeze 压榨
+skeptical 怀疑的
+full-blown 成熟的
+conformity 一致，合适，符合
+mandate 授权，命令，指令，托管
