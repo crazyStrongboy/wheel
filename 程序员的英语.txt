@@ -84,6 +84,13 @@ compatible 兼容的
 necessitate 迫使
 isolate 隔离
 crop up 突然出现
+oblige 强制
+workaround 变通方法
+bidirectional 双向作用的
+handshake 握手
+proprietary 所有权，所有人的
+saturation 饱和
+interchange 互换
 awry 错误的
 culprit 罪魁祸首
 facilitate 促进
@@ -104,3 +111,8 @@ nested 嵌套的
 respectively 分别地，各自地
 
 envision 想象，预想
+
+encryption 加密
+decryption 解密
+leverage 利用
+squeeze 压榨

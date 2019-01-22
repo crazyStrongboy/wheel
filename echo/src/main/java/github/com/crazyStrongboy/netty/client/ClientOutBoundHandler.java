@@ -12,6 +12,11 @@ public class ClientOutBoundHandler extends ChannelOutboundHandlerAdapter {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         System.err.println("out//////////");
-        super.write(ctx, msg, promise);
+        ctx.writeAndFlush(msg);
+    }
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        cause.printStackTrace();
+        super.exceptionCaught(ctx, cause);
     }
 }
