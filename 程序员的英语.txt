@@ -120,3 +120,7 @@ skeptical 怀疑的
 full-blown 成熟的
 conformity 一致，合适，符合
 mandate 授权，命令，指令，托管
+
+unicast 单一传播
+analogy 类比
+dedicate 专用的
