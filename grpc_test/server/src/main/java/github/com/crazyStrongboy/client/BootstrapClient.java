@@ -62,6 +62,7 @@ public class BootstrapClient {
 
             @Override
             public void onCompleted() {
+                System.err.println("client complete.........");
                 latch.countDown();
             }
         };
@@ -83,7 +84,7 @@ public class BootstrapClient {
         String name = args.length > 0 ? args[0] : "unknown";
 
         try {
-            client.sync(name);
+//            client.sync(name);
             client.streamTest(name);
         } finally {
             client.shutdown();

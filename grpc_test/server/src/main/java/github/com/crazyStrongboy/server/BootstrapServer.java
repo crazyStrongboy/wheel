@@ -65,6 +65,7 @@ public class BootstrapServer {
     private class StreamServiceImpl extends StreamServiceGrpc.StreamServiceImplBase {
         @Override
         public StreamObserver<StreamRequest> streamRpc(StreamObserver<StreamResponse> responseObserver) {
+//            responseObserver.onCompleted();
             responseObserver.onNext(StreamResponse.newBuilder().setReceive("xxxxxxxxxxxxxxxxxx").build());
             return new StreamObserver<StreamRequest>() {
                 @Override
