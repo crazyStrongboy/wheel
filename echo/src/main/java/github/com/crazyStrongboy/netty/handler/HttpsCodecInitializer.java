@@ -1,7 +1,7 @@
 package github.com.crazyStrongboy.netty.handler;
 
 import github.com.crazyStrongboy.netty.client.ClientOutBoundHandler;
-import github.com.crazyStrongboy.netty.server.ServerHandler;
+import github.com.crazyStrongboy.netty.server.ClientInBoundHandler;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -36,7 +36,7 @@ public class HttpsCodecInitializer extends ChannelInitializer<Channel> {
             pipeline.addLast(new ClientOutBoundHandler());
         } else {
             pipeline.addLast("codec", new HttpServerCodec());
-            pipeline.addLast(new ServerHandler());
+            pipeline.addLast(new ClientInBoundHandler());
         }
     }
 
