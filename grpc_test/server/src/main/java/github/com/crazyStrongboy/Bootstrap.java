@@ -1,9 +1,8 @@
 package github.com.crazyStrongboy;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -46,8 +45,8 @@ public class Bootstrap {
 //            System.err.println(s);
 //           return  s.toUpperCase()+" : hello";
 //        }).forEach(s -> System.out.println(s));
-//        stream.filter((i) -> i.startsWith("a"))
-//                .distinct().forEach(s -> System.out.println(s));
+        stream.filter((i) -> i.startsWith("a"))
+                .distinct().forEach(a -> System.out.println(a));
 
 //        System.err.println(Spliterator.SIZED | Spliterator.SUBSIZED);
         List<Employee> employeeList = new ArrayList<>();
@@ -55,6 +54,18 @@ public class Bootstrap {
         employeeList.add(new Employee("111"));
         employeeList.add(new Employee("222"));
         employeeList.stream().forEach(Employee::print);
+
+
+        Stream<String> stringStream = Stream.of("ada", "da", "1");
+        List<String> stringList = stringStream.collect(Collectors.toList());
+        System.out.println(stringList);
+
+        List<Student> students = new ArrayList<>();
+        students.add(new Student("zhangsan",50));
+        students.add(new Student("lisi",10));
+        students.add(new Student("wangwu",43));
+        Map<Student, Integer> studentIntegerMap = students.stream().collect(Collectors.toMap(Function.identity(), student -> student.score));
+        studentIntegerMap.forEach((key,value)-> System.out.println(key.name+"==="+value));
 
     }
 
@@ -67,6 +78,17 @@ public class Bootstrap {
 
         public void print() {
             System.err.println(name);
+        }
+    }
+
+    public static class Student {
+        private String name;
+
+        private Integer score;
+
+        public Student(String name, Integer score) {
+            this.name = name;
+            this.score = score;
         }
     }
 }
