@@ -9,10 +9,10 @@
 1. [简单的RPC流程](https://github.com/crazyStrongboy/wheel/tree/master/rpc_server "简单的RPC流程")
 2. [简单的MVC流程](https://github.com/crazyStrongboy/wheel/tree/master/simple_web "简单的MVC流程")
 3. [工具类：这个得慢慢整理](https://github.com/crazyStrongboy/wheel/tree/master/common_utils "工具类")
-4. [nio bio aio的代码案例](https://github.com/crazyStrongboy/wheel/tree/master/echo "nio bio aio的代码案例")
+4. [nio bio aio netty的代码案例](https://github.com/crazyStrongboy/wheel/tree/master/echo "nio bio aio netty的代码案例")
 5. [disruptor 代码案例](https://github.com/crazyStrongboy/wheel/tree/master/disruptor_test "disruptor 代码案例")
 6. [grpc代码案例](https://github.com/crazyStrongboy/wheel/tree/master/grpc_test "grpc代码案例")
-7. [netty代码案例](https://github.com/crazyStrongboy/wheel/tree/master/echo "netty代码案例")
+
 
 
 

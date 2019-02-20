@@ -1,0 +1,1 @@
+利用DispatcherServlet实现的一个简单的MVC框架。里面还有很多具体细节未处理。

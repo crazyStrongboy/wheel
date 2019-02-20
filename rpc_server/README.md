@@ -1,23 +1,22 @@
 This is a simple rpc framework rudiment!
 
     Server:
-        //1.The first step is to have a registry
+        //1.创建一个注册中心
         RegistryCenter registry = new ZookeeperRegistryCenter();
-        //2. The second step is to have a rpcServer
+        //2.创建一个rpc服务端
         RpcServer rpcServer = new RpcServer(registry,"127.0.0.1:8080");
-        //3. The third step is to register service
+        //3.注册服务
         Hello hello = new HelloImpl();
         rpcServer.bind(hello);
-        //4. The last step is to publish service
+        //4.发布服务
         rpcServer.publish();
     
     
     Client:
-        //1.The first step is to have a discovery node
+        //1.创建一个服务发现节点
         ServiceDiscovery discovery = new ZookeeperServiceDiscovery();
-        //2.The second step is to create a instance,this can connect server
+        //2.创建一个远程调用实例
         RpcClientProxy rpcClient = new JdkRpcClientProxy(discovery);
         Hello hello = rpcClient.create(Hello.class);
-        //3. Rpc invoke
+        //3.进行远程调用
         String respond = hello.sayHello("stupid"); 
-    
