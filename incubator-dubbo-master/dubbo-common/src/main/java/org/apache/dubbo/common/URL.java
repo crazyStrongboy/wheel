@@ -1111,6 +1111,7 @@ class URL implements Serializable {
         for (String key : keys) {
             map.remove(key);
         }
+        // TODO 这里为什么要比较？？？？
         if (map.size() == getParameters().size()) {
             return this;
         }

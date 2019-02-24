@@ -18,6 +18,7 @@ package org.apache.dubbo.common.utils;
 
 /**
  * Helper Class for hold a value.
+ * 用来包装任何一个对象，简单的get和set
  */
 public class Holder<T> {
 

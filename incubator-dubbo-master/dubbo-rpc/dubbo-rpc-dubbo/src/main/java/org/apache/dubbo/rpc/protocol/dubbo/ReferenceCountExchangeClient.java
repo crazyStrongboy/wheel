@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 final class ReferenceCountExchangeClient implements ExchangeClient {
 
     private final URL url;
+    // TODO  这个计数器是用来干什么的？
     private final AtomicInteger referenceCount = new AtomicInteger(0);
 
     private ExchangeClient client;

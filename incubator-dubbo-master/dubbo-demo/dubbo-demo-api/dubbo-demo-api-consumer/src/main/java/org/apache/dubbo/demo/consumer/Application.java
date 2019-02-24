@@ -19,9 +19,11 @@
 package org.apache.dubbo.demo.consumer;
 
 import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ConsumerConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.demo.DemoService;
+import org.apache.dubbo.remoting.transport.mina.MinaTransporter;
 
 public class Application {
     /**
@@ -29,9 +31,14 @@ public class Application {
      * launch the application
      */
     public static void main(String[] args) {
+        System.setProperty("java.net.preferIPv4Stack" , "true");
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
         reference.setApplication(new ApplicationConfig("dubbo-demo-api-consumer"));
-        reference.setRegistry(new RegistryConfig("multicast://224.5.6.7:1234"));
+//        reference.setRegistry(new RegistryConfig("multicast://224.5.6.7:1234?unicast=false"));
+        reference.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
+        ConsumerConfig consumerConfig = new ConsumerConfig();
+        consumerConfig.setClient(MinaTransporter.NAME);
+        reference.setConsumer(consumerConfig);
         reference.setInterface(DemoService.class);
         DemoService service = reference.get();
         String message = service.sayHello("dubbo");

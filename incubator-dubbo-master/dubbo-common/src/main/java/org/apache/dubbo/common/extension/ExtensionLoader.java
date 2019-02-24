@@ -71,8 +71,9 @@ public class ExtensionLoader<T> {
 
     private static final Pattern NAME_SEPARATOR = Pattern.compile("\\s*[,]+\\s*");
 
+    // 用于记录所有的ExtensionLoader
     private static final ConcurrentMap<Class<?>, ExtensionLoader<?>> EXTENSION_LOADERS = new ConcurrentHashMap<Class<?>, ExtensionLoader<?>>();
-
+    // 用于记录所有的Object  loadResource出来的 ，非@Adaptive和wrap类
     private static final ConcurrentMap<Class<?>, Object> EXTENSION_INSTANCES = new ConcurrentHashMap<Class<?>, Object>();
 
     // ==============================
@@ -80,20 +81,25 @@ public class ExtensionLoader<T> {
     private final Class<?> type;
 
     private final ExtensionFactory objectFactory;
-
+    // 除了@Adaptive和wrap类，其他类都缓存到这个集合中 class == key
     private final ConcurrentMap<Class<?>, String> cachedNames = new ConcurrentHashMap<Class<?>, String>();
 
+    // 除了@Adaptive和wrap类，其他类都缓存到这个集合中  key == class
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<Map<String, Class<?>>>();
-
+    //缓存@Activate注解的类，兼容老版本@Activate注解的类也缓存
     private final Map<String, Object> cachedActivates = new ConcurrentHashMap<String, Object>();
+    // 存放key ===实例化后的对象
     private final ConcurrentMap<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<String, Holder<Object>>();
+    // 存放该ExtensionLoader持有的@Adaptive（一个ExtensionLoader最多只能由一个修饰）的类或者SPI配置的类（默认缓存类），
     private final Holder<Object> cachedAdaptiveInstance = new Holder<Object>();
     private volatile Class<?> cachedAdaptiveClass = null;
+    // 默认缓存类的名字
     private String cachedDefaultName;
+    // 用于记录创建cachedAdaptiveInstance 时是否发生异常
     private volatile Throwable createAdaptiveInstanceError;
-
+    // 用于缓存wrapper类
     private Set<Class<?>> cachedWrapperClasses;
-
+    // 记录加载类时的所有异常---》loadResource
     private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<String, IllegalStateException>();
 
     private ExtensionLoader(Class<?> type) {
@@ -544,6 +550,7 @@ public class ExtensionLoader<T> {
         try {
             if (objectFactory != null) {
                 for (Method method : instance.getClass().getMethods()) {
+                    // 设置set开头的方法，并且该方法只允许一个参数。
                     if (isSetter(method)) {
                         /**
                          * Check {@link DisableInject} to see if we need auto injection for this property
@@ -551,12 +558,15 @@ public class ExtensionLoader<T> {
                         if (method.getAnnotation(DisableInject.class) != null) {
                             continue;
                         }
+                        // 获取要设置的参数类型
                         Class<?> pt = method.getParameterTypes()[0];
                         if (ReflectUtils.isPrimitives(pt)) {
                             continue;
                         }
                         try {
+                            // 获取set方法的属性名，将index = 3 处的字母变成小写+后续字母
                             String property = getSetterProperty(method);
+                            // 默认会从SpiExtensionFactory获得拓展点，如果和spring 配合，还会从SpringExtensionFactory中获取。
                             Object object = objectFactory.getExtension(pt, property);
                             if (object != null) {
                                 method.invoke(instance, object);
@@ -715,10 +725,13 @@ public class ExtensionLoader<T> {
                     + clazz.getName() + " is not subtype of interface.");
         }
         if (clazz.isAnnotationPresent(Adaptive.class)) {
+            // 该类带有注解@Adaptive,则归为cachedAdaptiveClass。
             cacheAdaptiveClass(clazz);
         } else if (isWrapperClass(clazz)) {
+            // 该类有带参类型为clazz类型的，则认为是wrapper类==》cachedWrapperClasses
             cacheWrapperClass(clazz);
         } else {
+            // 该类经过一系列条件过滤后存放到cachedActivates集合中。
             clazz.getConstructor();
             if (StringUtils.isEmpty(name)) {
                 name = findAnnotationName(clazz);
@@ -846,7 +859,9 @@ public class ExtensionLoader<T> {
         return cachedAdaptiveClass = createAdaptiveExtensionClass();
     }
 
+    // 生成各种动态代理对象，加强@Adaptive注解修饰的方法
     private Class<?> createAdaptiveExtensionClass() {
+        // 生成默认缓存类的code文件
         String code = new AdaptiveClassCodeGenerator(type, cachedDefaultName).generate();
         ClassLoader classLoader = findClassLoader();
         org.apache.dubbo.common.compiler.Compiler compiler = ExtensionLoader.getExtensionLoader(org.apache.dubbo.common.compiler.Compiler.class).getAdaptiveExtension();
