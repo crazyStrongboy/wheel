@@ -297,6 +297,7 @@ public class ConfigManager {
         return consumers;
     }
 
+    // 这些配置只要不是null，都调用refresh方法刷新一遍
     public void refreshAll() {
         // refresh all configs here,
         getApplication().ifPresent(ApplicationConfig::refresh);

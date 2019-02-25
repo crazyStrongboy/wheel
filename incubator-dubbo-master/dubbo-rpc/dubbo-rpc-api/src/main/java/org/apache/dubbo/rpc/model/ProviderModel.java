@@ -30,15 +30,18 @@ public class ProviderModel {
     private final String serviceName;
     private final Object serviceInstance;
     private final Class<?> serviceInterfaceClass;
+    // 存放所有方法名，方法参数，服务名等的集合
     private final Map<String, List<ProviderMethodModel>> methods = new HashMap<String, List<ProviderMethodModel>>();
 
     public ProviderModel(String serviceName, Object serviceInstance, Class<?> serviceInterfaceClass) {
         if (null == serviceInstance) {
             throw new IllegalArgumentException("Service[" + serviceName + "]Target is NULL.");
         }
-
+        // 服务名
         this.serviceName = serviceName;
+        // 被调用真正实现服务的实例
         this.serviceInstance = serviceInstance;
+        // 被调用服务的接口
         this.serviceInterfaceClass = serviceInterfaceClass;
 
         initMethod();

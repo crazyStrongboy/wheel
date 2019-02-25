@@ -390,6 +390,7 @@ public abstract class AbstractConfig implements Serializable {
         }).collect(Collectors.toSet());
     }
 
+    // 获取原本属性名或者@Parameter 注解key的值
     private static String extractPropertyName(Class<?> clazz, Method setter) throws Exception {
         String propertyName = setter.getName().substring("set".length());
         Method getter = null;
@@ -486,6 +487,7 @@ public abstract class AbstractConfig implements Serializable {
             try {
                 String name = method.getName();
                 if (isMetaMethod(method)) {
+                    // 获取属性名字 例如setParam 则获取param，isValidate,则获取validate
                     String prop = calculateAttributeFromGetter(name);
                     String key;
                     Parameter parameter = method.getAnnotation(Parameter.class);
@@ -496,10 +498,12 @@ public abstract class AbstractConfig implements Serializable {
                     }
                     // treat url and configuration differently, the value should always present in configuration though it may not need to present in url.
                     //if (method.getReturnType() == Object.class || parameter != null && parameter.excluded()) {
+                    // 返回类型为Object的情况下直接在集合的对应key位置上存储null
                     if (method.getReturnType() == Object.class) {
                         metaData.put(key, null);
                         continue;
                     }
+                    // 调用get开头或者is开头的方法获取返回值
                     Object value = method.invoke(this);
                     String str = String.valueOf(value).trim();
                     if (value != null && str.length() > 0) {
@@ -538,12 +542,25 @@ public abstract class AbstractConfig implements Serializable {
     /**
      * TODO: Currently, only support overriding of properties explicitly defined in Config class, doesn't support
      * overriding of customized parameters stored in 'parameters'.
+     * 每个config都有自己的一个CompositeConfiguration
+     *
+     *  public void refreshAll() {
+     *         getApplication().ifPresent(ApplicationConfig::refresh);
+     *         getMonitor().ifPresent(MonitorConfig::refresh);
+     *         getModule().ifPresent(ModuleConfig::refresh);
+     *
+     *         getProtocols().values().forEach(ProtocolConfig::refresh);
+     *         getRegistries().values().forEach(RegistryConfig::refresh);
+     *         getProviders().values().forEach(ProviderConfig::refresh);
+     *         getConsumers().values().forEach(ConsumerConfig::refresh);
+     *     }
      */
     public void refresh() {
         try {
             CompositeConfiguration compositeConfiguration = Environment.getInstance().getConfiguration(getPrefix(), getId());
             InmemoryConfiguration config = new InmemoryConfiguration(getPrefix(), getId());
             config.addProperties(getMetaData());
+            // 设置配置文件的优先级，后面有用到
             if (Environment.getInstance().isConfigCenterFirst()) {
                 // The sequence would be: SystemConfiguration -> ExternalConfiguration -> AppExternalConfiguration -> AbstractConfig -> PropertiesConfiguration
                 compositeConfiguration.addConfiguration(3, config);
@@ -557,8 +574,12 @@ public abstract class AbstractConfig implements Serializable {
             for (Method method : methods) {
                 if (ClassHelper.isSetter(method)) {
                     try {
+                        // 从组合的Configuration中获取对应的值，有优先级关系，检索出第一个即可
+                        // 例如有AConfiguration和BConfiguration，从A中检索出后就直接取A的值。
+                        // SystemConfiguration系统环境变量优先取
                         String value = compositeConfiguration.getString(extractPropertyName(getClass(), method));
                         // isTypeMatch() is called to avoid duplicate and incorrect update, for example, we have two 'setGeneric' methods in ReferenceConfig.
+                        // 值不为空且类型符合，则设置值
                         if (StringUtils.isNotEmpty(value) && ClassHelper.isTypeMatch(method.getParameterTypes()[0], value)) {
                             method.invoke(this, ClassHelper.convertPrimitive(method.getParameterTypes()[0], value));
                         }

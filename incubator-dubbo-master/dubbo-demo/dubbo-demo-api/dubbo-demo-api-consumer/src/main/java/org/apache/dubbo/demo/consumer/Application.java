@@ -22,6 +22,7 @@ import org.apache.dubbo.config.ApplicationConfig;
 import org.apache.dubbo.config.ConsumerConfig;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.container.Main;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.remoting.transport.mina.MinaTransporter;
 
@@ -43,5 +44,6 @@ public class Application {
         DemoService service = reference.get();
         String message = service.sayHello("dubbo");
         System.out.println(message);
+
     }
 }

@@ -536,6 +536,7 @@ public class ProtocolConfig extends AbstractConfig {
     @Override
     public void refresh() {
         if (StringUtils.isEmpty(this.getName())) {
+            // 这里顺便也会更新protocol的Id，id不存在则取name值
             this.setName(Constants.DUBBO_VERSION_KEY);
         }
         super.refresh();

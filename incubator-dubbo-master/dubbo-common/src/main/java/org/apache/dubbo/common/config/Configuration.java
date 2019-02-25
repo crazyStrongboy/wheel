@@ -92,6 +92,7 @@ public interface Configuration {
     }
 
 
+
     default <T> T convert(Class<T> cls, String key, T defaultValue) {
         // we only process String properties for now
         String value = (String) getProperty(key);
@@ -131,6 +132,5 @@ public interface Configuration {
 
         return cls.cast(obj);
     }
-
 
 }
