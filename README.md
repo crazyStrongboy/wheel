@@ -12,6 +12,7 @@
 4. [nio bio aio netty的代码案例](https://github.com/crazyStrongboy/wheel/tree/master/echo "nio bio aio netty的代码案例")
 5. [disruptor 代码案例](https://github.com/crazyStrongboy/wheel/tree/master/disruptor_test "disruptor 代码案例")
 6. [grpc代码案例](https://github.com/crazyStrongboy/wheel/tree/master/grpc_test "grpc代码案例")
+7. [spi代码案例](https://github.com/crazyStrongboy/wheel/tree/master/spi_demo "spi代码案例")
 
 
 
