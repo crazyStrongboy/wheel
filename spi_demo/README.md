@@ -53,3 +53,7 @@
 2. 解析文件内容。 
 3. 存放到一个Map容器中。键为name，值为具体实现类的Class。
 4. 封装一个对外提供的方法，参数为name值。
+
+
+### 有关文章
+[由浅入深理解Dubbo的SPI机制](https://www.hcyhj.cn/2019/02/26/dubbo-spi/index.html)
