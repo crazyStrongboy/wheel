@@ -39,7 +39,7 @@ public class ExtensionLoad<T> {
      */
     public void loadDirectory(Class tClass) {
         String fileName = MARS_JUN_DIR + tClass.getName();
-        ClassLoader classLoader = App.class.getClassLoader();
+        ClassLoader classLoader = this.getClass().getClassLoader();
         try {
 
             Enumeration<URL> resources = classLoader.getResources(fileName);
@@ -56,7 +56,8 @@ public class ExtensionLoad<T> {
 
     public void loadResource(ClassLoader classLoader, URL resourceURL) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(resourceURL.openStream(), "utf-8"));
+            BufferedReader reader = new BufferedReader(
+                    new InputStreamReader(resourceURL.openStream(), "utf-8"));
             try {
                 String line;
                 while ((line = reader.readLine()) != null) {
