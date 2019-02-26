@@ -53,3 +53,9 @@ jvm内部调用
 >1. 本地端口监听
 2. 注册到zookeeper
 3. 订阅服务的改变事件
+
+### 调用服务时
+1. urls.size() == 1??????
+2. invoker === MockClusterInvoker
+3. 通过invoker创建代理服务进行调用。
+4. proxy0.sayHello() ===>handler.invoke()
