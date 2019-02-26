@@ -12,6 +12,7 @@
 4. [nio bio aio netty的代码案例](https://github.com/crazyStrongboy/wheel/tree/master/echo "nio bio aio netty的代码案例")
 5. [disruptor 代码案例](https://github.com/crazyStrongboy/wheel/tree/master/disruptor_test "disruptor 代码案例")
 6. [grpc代码案例](https://github.com/crazyStrongboy/wheel/tree/master/grpc_test "grpc代码案例")
+7. [spi代码案例](https://github.com/crazyStrongboy/wheel/tree/master/spi_demo "spi代码案例")
 
 
 
@@ -26,11 +27,14 @@
 
 ### TCP-IP相关
 - [TCP-IP笔记](https://github.com/crazyStrongboy/wheel/blob/master/tcp-ip%E5%9B%BE%E8%A7%A3/TCP-IP%E5%9B%BE%E8%A7%A3%E7%AC%94%E8%AE%B0.md "TCP-IP笔记")
-- [数据链路层笔记](https://github.com/crazyStrongboy/wheel/blob/master/tcp-ip%E5%9B%BE%E8%A7%A3/TCP-IP%E5%9B%BE%E8%A7%A3%E7%AC%94%E8%AE%B0.md "数据链路层笔记")
+- [数据链路层笔记](https://github.com/crazyStrongboy/wheel/blob/master/tcp-ip%E5%9B%BE%E8%A7%A3/%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82.md "数据链路层笔记")
 
 
 ## [各种VISIO代码流程图](https://github.com/crazyStrongboy/wheel/tree/master/visio)
 这一块到时候不定时的补充，后面会分类更加详细。
+
+## hexo个人博客的一些优化
+1. [结合畅言打赏](https://github.com/crazyStrongboy/wheel/blob/master/hexo_next%E4%BC%98%E5%8C%96/%E7%BB%93%E5%90%88%E7%95%85%E8%A8%80%E6%89%93%E8%B5%8F.md "结合畅言打赏")
 
 
 ## 微信公众号（关注获取最新文章）
