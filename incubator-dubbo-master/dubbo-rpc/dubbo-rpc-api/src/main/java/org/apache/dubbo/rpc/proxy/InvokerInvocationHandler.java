@@ -57,6 +57,12 @@ public class InvokerInvocationHandler implements InvocationHandler {
         return invoker.invoke(createInvocation(method, args)).recreate();
     }
 
+    /**
+     * 封装调用参数
+     * @param method
+     * @param args
+     * @return
+     */
     private RpcInvocation createInvocation(Method method, Object[] args) {
         RpcInvocation invocation = new RpcInvocation(method, args);
         if (RpcUtils.hasFutureReturnType(method)) {

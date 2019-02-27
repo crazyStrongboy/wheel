@@ -33,8 +33,8 @@ public class Application {
         ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
         service.setApplication(new ApplicationConfig("dubbo-demo-api-provider"));
 //        service.setRegistry(new RegistryConfig("multicast://224.5.6.7:1234?unicast=false"));
-        service.setRegistry(new RegistryConfig("zookeeper://192.168.0.191:2181"));
-//        service.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
+//        service.setRegistry(new RegistryConfig("zookeeper://192.168.0.191:2181"));
+        service.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
         service.setInterface(DemoService.class);
         service.setRef(new DemoServiceImpl());
         service.export();

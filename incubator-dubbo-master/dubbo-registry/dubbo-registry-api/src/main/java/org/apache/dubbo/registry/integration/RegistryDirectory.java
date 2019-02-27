@@ -202,7 +202,7 @@ public class RegistryDirectory<T> extends AbstractDirectory<T> implements Notify
 
         toRouters(classifyUrls(categoryUrls, UrlUtils::isRoute)).ifPresent(this::addRouters);
 
-        // providers
+        // providers  url.getParameter("catogory", "") 必须要是providers才能触发这个方法
         refreshOverrideAndInvoker(classifyUrls(categoryUrls, UrlUtils::isProvider));
     }
 

@@ -32,6 +32,15 @@ public class JavassistProxyFactory extends AbstractProxyFactory {
     @Override
     @SuppressWarnings("unchecked")
     public <T> T getProxy(Invoker<T> invoker, Class<?>[] interfaces) {
+        /**
+         * 这里动态生成Proxy0对象，调用方法触发InvokerInvocationHandler.invoke()方法
+         *
+         * 这里的invoker === MockClusterInvoker(RegistryDirectory,FailoverClusterInvoker)
+         *
+         * FailoverClusterInvoker中Invoker<T> invoker = select(loadbalance, invocation, copyInvokers, invoked);选择出合适的invoker
+         *
+         * InvokerDelegate(ProtocolFilterWrapper(ProtocolListenerWrapper(DubboInvoker(--->netty发送流程))))
+         */
         return (T) Proxy.getProxy(interfaces).newInstance(new InvokerInvocationHandler(invoker));
     }
 
