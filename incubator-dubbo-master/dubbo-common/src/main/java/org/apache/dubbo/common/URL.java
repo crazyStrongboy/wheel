@@ -1112,6 +1112,7 @@ class URL implements Serializable {
             map.remove(key);
         }
         // TODO 这里为什么要比较？？？？
+        // 解释：如果并没有移除，则返回原对象，无需重新new一个URL
         if (map.size() == getParameters().size()) {
             return this;
         }
