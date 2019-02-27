@@ -22,11 +22,7 @@ import org.apache.dubbo.common.Version;
 import org.apache.dubbo.common.bytecode.Wrapper;
 import org.apache.dubbo.common.config.Environment;
 import org.apache.dubbo.common.extension.ExtensionLoader;
-import org.apache.dubbo.common.utils.ClassHelper;
-import org.apache.dubbo.common.utils.CollectionUtils;
-import org.apache.dubbo.common.utils.ConfigUtils;
-import org.apache.dubbo.common.utils.NamedThreadFactory;
-import org.apache.dubbo.common.utils.StringUtils;
+import org.apache.dubbo.common.utils.*;
 import org.apache.dubbo.config.annotation.Service;
 import org.apache.dubbo.config.context.ConfigManager;
 import org.apache.dubbo.config.invoker.DelegateProviderMetaDataInvoker;
@@ -43,27 +39,14 @@ import org.apache.dubbo.rpc.service.GenericService;
 import org.apache.dubbo.rpc.support.ProtocolUtils;
 
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.net.*;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static org.apache.dubbo.common.Constants.LOCALHOST_VALUE;
-import static org.apache.dubbo.common.utils.NetUtils.getAvailablePort;
-import static org.apache.dubbo.common.utils.NetUtils.getLocalHost;
-import static org.apache.dubbo.common.utils.NetUtils.isInvalidLocalHost;
-import static org.apache.dubbo.common.utils.NetUtils.isInvalidPort;
+import static org.apache.dubbo.common.utils.NetUtils.*;
 
 /**
  * ServiceConfig
@@ -327,6 +310,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
     }
 
     public synchronized void export() {
+        // 检查一些配置属性
         checkAndUpdateSubConfigs();
 
         if (provider != null) {
@@ -341,9 +325,12 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             return;
         }
 
+        // 关注doExport这个方法，真正的发布入口
         if (delay != null && delay > 0) {
+            // 配置延迟发布则按规定时间后进行发布
             delayExportExecutor.schedule(this::doExport, delay, TimeUnit.MILLISECONDS);
         } else {
+            // 直接发布
             doExport();
         }
     }
@@ -364,7 +351,9 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         // getUniqueServiceName 返回的是全名group/(path or class.getName):version
         // 例如：group0/com.mars_jun.api.Demo:v1.0.0
         ProviderModel providerModel = new ProviderModel(getUniqueServiceName(), ref, interfaceClass);
+        // 用一个map【providedServices】把这些providerModel缓存起来
         ApplicationModel.initProviderModel(getUniqueServiceName(), providerModel);
+
         doExportUrls();
     }
 
@@ -402,7 +391,13 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void doExportUrls() {
+        // 加载所有的registry并转化成为URL
+        /**
+         * urlString: registry://192.168.0.191:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-provider&dubbo=2.0.2&pid=1400&registry=zookeeper&timestamp=1551233966651
+         * map中registry 参数为zookeeper
+         */
         List<URL> registryURLs = loadRegistries(true);
+        //  支持多协议发布
         for (ProtocolConfig protocolConfig : protocols) {
             doExportUrlsFor1Protocol(protocolConfig, registryURLs);
         }
@@ -422,6 +417,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         appendParameters(map, provider, Constants.DEFAULT_KEY);
         appendParameters(map, protocolConfig);
         appendParameters(map, this);
+        // 判断有没有配置到方法级别，没有配置则忽略不看
         if (CollectionUtils.isNotEmpty(methods)) {
             for (MethodConfig method : methods) {
                 appendParameters(map, method, method.getName());
@@ -486,7 +482,7 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             if (revision != null && revision.length() > 0) {
                 map.put("revision", revision);
             }
-
+            // 动态代理生成的对象 存放到WRAPPER_MAP 容器中，键为接口全名
             String[] methods = Wrapper.getWrapper(interfaceClass).getMethodNames();
             if (methods.length == 0) {
                 logger.warn("No method found in service interface " + interfaceClass.getName());
@@ -508,10 +504,13 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
             contextPath = provider.getContextpath();
         }
 
+        //从配置文件或者一些其他方式获取host和port
         String host = this.findConfigedHosts(protocolConfig, registryURLs, map);
         Integer port = this.findConfigedPorts(protocolConfig, name, map);
+
         URL url = new URL(name, host, port, (StringUtils.isEmpty(contextPath) ? "" : contextPath + "/") + path, map);
 
+        // 判断是否有符合protocol的配置工厂，有的话需要处理一下配置参数，例如：合并等
         if (ExtensionLoader.getExtensionLoader(ConfiguratorFactory.class)
                 .hasExtension(url.getProtocol())) {
             url = ExtensionLoader.getExtensionLoader(ConfiguratorFactory.class)
@@ -523,7 +522,8 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
         if (!Constants.SCOPE_NONE.equalsIgnoreCase(scope)) {
 
             // export to local if the config is not remote (export to remote only when config is remote)
-            // 暴露本地服务,虚拟机内部调用使用
+            // 暴露本地服务,虚拟机内部调用使用====目前推断应该是直连服务
+            // TODO 这里应该还是dubbo的协议头
             if (!Constants.SCOPE_REMOTE.equalsIgnoreCase(scope)) {
                 exportLocal(url);
             }
@@ -549,8 +549,11 @@ public class ServiceConfig<T> extends AbstractServiceConfig {
                             registryURL = registryURL.addParameter(Constants.PROXY_KEY, proxy);
                         }
 
-
+                        // 获取invoker，ref===concrete instance
+                        // 这里的proxyFactory = StubProxyFactoryWrapper(JavassistProxyFactory)
+                        // invoker == JavassistProxyFactory$1 即JavassistProxyFactory动态生成的一个AbstractProxyInvoker对象
                         Invoker<?> invoker = proxyFactory.getInvoker(ref, (Class) interfaceClass, registryURL.addParameterAndEncoded(Constants.EXPORT_KEY, url.toFullString()));
+                        //
                         DelegateProviderMetaDataInvoker wrapperInvoker = new DelegateProviderMetaDataInvoker(invoker, this);
 
                         // 这里会通过invoker包装的URL中获取protocol的值，然后根据其类型获取相应的Protocol去暴露服务

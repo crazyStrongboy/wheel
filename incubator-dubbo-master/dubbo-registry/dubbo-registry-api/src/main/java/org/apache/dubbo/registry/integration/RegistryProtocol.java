@@ -33,11 +33,7 @@ import org.apache.dubbo.registry.RegistryFactory;
 import org.apache.dubbo.registry.RegistryService;
 import org.apache.dubbo.registry.support.ProviderConsumerRegTable;
 import org.apache.dubbo.registry.support.ProviderInvokerWrapper;
-import org.apache.dubbo.rpc.Exporter;
-import org.apache.dubbo.rpc.Invoker;
-import org.apache.dubbo.rpc.Protocol;
-import org.apache.dubbo.rpc.ProxyFactory;
-import org.apache.dubbo.rpc.RpcException;
+import org.apache.dubbo.rpc.*;
 import org.apache.dubbo.rpc.cluster.Cluster;
 import org.apache.dubbo.rpc.cluster.Configurator;
 import org.apache.dubbo.rpc.model.ApplicationModel;
@@ -51,40 +47,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newSingleThreadExecutor;
-import static org.apache.dubbo.common.Constants.ACCEPT_FOREIGN_IP;
-import static org.apache.dubbo.common.Constants.ANY_VALUE;
-import static org.apache.dubbo.common.Constants.BIND_IP_KEY;
-import static org.apache.dubbo.common.Constants.BIND_PORT_KEY;
-import static org.apache.dubbo.common.Constants.CATEGORY_KEY;
-import static org.apache.dubbo.common.Constants.CHECK_KEY;
-import static org.apache.dubbo.common.Constants.COMMA_SPLIT_PATTERN;
-import static org.apache.dubbo.common.Constants.CONFIGURATORS_CATEGORY;
-import static org.apache.dubbo.common.Constants.CONFIGURATORS_SUFFIX;
-import static org.apache.dubbo.common.Constants.CONSUMERS_CATEGORY;
-import static org.apache.dubbo.common.Constants.CONSUMER_PROTOCOL;
-import static org.apache.dubbo.common.Constants.DEFAULT_DIRECTORY;
-import static org.apache.dubbo.common.Constants.DEFAULT_REGISTER_CONSUMER_KEYS;
-import static org.apache.dubbo.common.Constants.DEFAULT_REGISTER_PROVIDER_KEYS;
-import static org.apache.dubbo.common.Constants.DEFAULT_REGISTRY;
-import static org.apache.dubbo.common.Constants.EXPORT_KEY;
-import static org.apache.dubbo.common.Constants.EXTRA_KEYS_KEY;
-import static org.apache.dubbo.common.Constants.HIDE_KEY_PREFIX;
-import static org.apache.dubbo.common.Constants.INTERFACES;
-import static org.apache.dubbo.common.Constants.METHODS_KEY;
-import static org.apache.dubbo.common.Constants.MONITOR_KEY;
-import static org.apache.dubbo.common.Constants.OVERRIDE_PROTOCOL;
-import static org.apache.dubbo.common.Constants.PROVIDERS_CATEGORY;
-import static org.apache.dubbo.common.Constants.PROVIDER_PROTOCOL;
-import static org.apache.dubbo.common.Constants.QOS_ENABLE;
-import static org.apache.dubbo.common.Constants.QOS_PORT;
-import static org.apache.dubbo.common.Constants.REFER_KEY;
-import static org.apache.dubbo.common.Constants.REGISTER_IP_KEY;
-import static org.apache.dubbo.common.Constants.REGISTER_KEY;
-import static org.apache.dubbo.common.Constants.REGISTRY_KEY;
-import static org.apache.dubbo.common.Constants.REGISTRY_PROTOCOL;
-import static org.apache.dubbo.common.Constants.ROUTERS_CATEGORY;
-import static org.apache.dubbo.common.Constants.SIMPLIFIED_KEY;
-import static org.apache.dubbo.common.Constants.VALIDATION_KEY;
+import static org.apache.dubbo.common.Constants.*;
 import static org.apache.dubbo.common.utils.UrlUtils.classifyUrls;
 
 /**
@@ -174,12 +137,13 @@ public class RegistryProtocol implements Protocol {
         // FIXME When the provider subscribes, it will affect the scene : a certain JVM exposes the service and call
         //  the same service. Because the subscribed is cached key with the name of the service, it causes the
         //  subscription information to cover.  provider:// url
+        // configurators 文件夹
         final URL overrideSubscribeUrl = getSubscribedOverrideUrl(providerUrl);
         final OverrideListener overrideSubscribeListener = new OverrideListener(overrideSubscribeUrl, originInvoker);
         overrideListeners.put(overrideSubscribeUrl, overrideSubscribeListener);
 
         providerUrl = overrideUrlWithConfig(providerUrl, overrideSubscribeListener);
-        //export invoker 本地开启监听端口，默认20880
+        //export invoker 本地开启监听端口，默认20880 ，放到bounds集合中
         final ExporterChangeableWrapper<T> exporter = doLocalExport(originInvoker, providerUrl);
 
         // url to registry ===> ZookeeperRegistry
@@ -190,11 +154,12 @@ public class RegistryProtocol implements Protocol {
         //to judge if we need to delay publish
         boolean register = registeredProviderUrl.getParameter("register", true);
         if (register) {
+            // 注册服务
             register(registryUrl, registeredProviderUrl);
             providerInvokerWrapper.setReg(true);
         }
 
-        // Deprecated! Subscribe to override rules in 2.6.x or before.
+        // 订阅监听zookeeper节点的变化
         registry.subscribe(overrideSubscribeUrl, overrideSubscribeListener);
 
         exporter.setRegisterUrl(registeredProviderUrl);
@@ -218,7 +183,7 @@ public class RegistryProtocol implements Protocol {
             synchronized (bounds) {
                 exporter = (ExporterChangeableWrapper<T>) bounds.get(key);
                 if (exporter == null) {
-
+                    // 又对invoker进行了一次包装。即对DelegateProviderMetaDataInvoker进行包装
                     final Invoker<?> invokerDelegete = new InvokerDelegate<T>(originInvoker, providerUrl);
                     exporter = new ExporterChangeableWrapper<T>((Exporter<T>) protocol.export(invokerDelegete), originInvoker);
                     bounds.put(key, exporter);
@@ -351,6 +316,9 @@ public class RegistryProtocol implements Protocol {
         }
 
         // group="a,b" or group="*"
+        /**
+         * 关注doRefer这个点就行
+         */
         Map<String, String> qs = StringUtils.parseQueryString(url.getParameterAndDecoded(REFER_KEY));
         String group = qs.get(Constants.GROUP_KEY);
         if (group != null && group.length() > 0) {

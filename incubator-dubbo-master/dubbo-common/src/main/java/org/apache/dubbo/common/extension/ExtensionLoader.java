@@ -537,6 +537,7 @@ public class ExtensionLoader<T> {
             Set<Class<?>> wrapperClasses = cachedWrapperClasses;
             if (CollectionUtils.isNotEmpty(wrapperClasses)) {
                 for (Class<?> wrapperClass : wrapperClasses) {
+                    // 一个个的包装，例如：ProtocolFilterWrapper(ProtocolListenerWrapper(DubboProtocol))
                     instance = injectExtension((T) wrapperClass.getConstructor(type).newInstance(instance));
                 }
             }
@@ -568,6 +569,7 @@ public class ExtensionLoader<T> {
                             // 获取set方法的属性名，将index = 3 处的字母变成小写+后续字母
                             String property = getSetterProperty(method);
                             // 默认会从SpiExtensionFactory获得拓展点，如果和spring 配合，还会从SpringExtensionFactory中获取。
+                            // 优先原则，谁先获取到就先返回。SpiExtensionFactory优先
                             Object object = objectFactory.getExtension(pt, property);
                             if (object != null) {
                                 method.invoke(instance, object);

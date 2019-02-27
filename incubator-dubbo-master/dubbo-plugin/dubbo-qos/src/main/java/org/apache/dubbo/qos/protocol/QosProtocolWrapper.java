@@ -57,7 +57,7 @@ public class QosProtocolWrapper implements Protocol {
     @Override
     public <T> Exporter<T> export(Invoker<T> invoker) throws RpcException {
         if (Constants.REGISTRY_PROTOCOL.equals(invoker.getUrl().getProtocol())) {
-            // 开启netty的服务端，供后期服务的调用
+            // 这里是开启Qos服务，供运维人员使用。。。。例如telnet类似的操作
             startQosServer(invoker.getUrl());
             return protocol.export(invoker);
         }

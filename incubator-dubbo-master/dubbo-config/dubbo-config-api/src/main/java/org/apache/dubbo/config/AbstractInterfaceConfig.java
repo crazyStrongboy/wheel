@@ -293,7 +293,9 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
                 if (StringUtils.isEmpty(address)) {
                     address = Constants.ANYHOST_VALUE;
                 }
+                // "N/A" 判断
                 if (!RegistryConfig.NO_AVAILABLE.equalsIgnoreCase(address)) {
+                    // 整合一些配置参数
                     Map<String, String> map = new HashMap<String, String>();
                     appendParameters(map, application);
                     appendParameters(map, config);

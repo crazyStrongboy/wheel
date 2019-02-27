@@ -255,6 +255,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         }
         initialized = true;
         checkStubAndLocal(interfaceClass);
+        // 检查是否配有降级操作
         checkMock(interfaceClass);
         Map<String, String> map = new HashMap<String, String>();
 
@@ -325,6 +326,7 @@ public class ReferenceConfig<T> extends AbstractReferenceConfig {
         }
 
         if (isJvmRefer) {
+            // JVM内部调用
             URL url = new URL(Constants.LOCAL_PROTOCOL, Constants.LOCALHOST_VALUE, 0, interfaceClass.getName()).addParameters(map);
             invoker = refprotocol.refer(interfaceClass, url);
             if (logger.isInfoEnabled()) {

@@ -36,7 +36,8 @@ public class Application {
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
         reference.setApplication(new ApplicationConfig("dubbo-demo-api-consumer"));
 //        reference.setRegistry(new RegistryConfig("multicast://224.5.6.7:1234?unicast=false"));
-        reference.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
+        reference.setRegistry(new RegistryConfig("zookeeper://192.168.0.191:2181"));
+//        reference.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
         ConsumerConfig consumerConfig = new ConsumerConfig();
         consumerConfig.setClient(MinaTransporter.NAME);
         reference.setConsumer(consumerConfig);

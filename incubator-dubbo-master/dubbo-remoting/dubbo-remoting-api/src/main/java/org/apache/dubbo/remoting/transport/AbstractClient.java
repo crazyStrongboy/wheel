@@ -289,18 +289,18 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
     }
 
     /**
-     * Open client.
-     *
-     * @throws Throwable
-     */
-    protected abstract void doOpen() throws Throwable;
-
-    /**
      * Close client.
      *
      * @throws Throwable
      */
     protected abstract void doClose() throws Throwable;
+
+    /**
+     * Open client.
+     *
+     * @throws Throwable
+     */
+    protected abstract void doOpen() throws Throwable;
 
     /**
      * Connect to server.
