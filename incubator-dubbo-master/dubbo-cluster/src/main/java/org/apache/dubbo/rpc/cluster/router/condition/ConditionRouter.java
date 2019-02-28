@@ -172,6 +172,7 @@ public class ConditionRouter extends AbstractRouter implements Comparable<Router
                 return invokers;
             }
             List<Invoker<T>> result = new ArrayList<Invoker<T>>();
+            // 未配备与消费端匹配的服务规则时，表名该服务对该消费者禁用
             if (thenCondition == null) {
                 logger.warn("The current consumer in the service blacklist. consumer: " + NetUtils.getLocalHost() + ", service: " + url.getServiceKey());
                 return result;

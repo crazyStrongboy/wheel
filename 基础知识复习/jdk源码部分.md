@@ -60,7 +60,11 @@
 
 ```
 
-如上面的代码段，在环形链表中，e.next始终不会为空，这样会导致外圈死循环一直运行，最终导致CPU飙升为100%。这个只会在jdk1.7中存在，jdk1.8不会出现死循环的问题。jdk1.8的resize设计与1.8之前的略有不同，并且提升了hashmap的性能，增加了随机性，resize后key要么在原先的index上，要么在index+old_length上，old_length为扩容前hashmap的长度。且在jdk1.8中不会出现环形链表的问题。
+如上面的代码段，在环形链表中，e.next始终不会为空，这样会导致外圈死循环一直运行，最终导致CPU飙升为100%。这个只会在jdk1.7中存在。
+
+>①jdk1.8不会出现死循环的问题。jdk1.8的resize设计与1.8之前的略有不同，不会改变原底层数组结构，并且提升了hashmap的性能，增加了随机性，resize后key要么在原先的index上，要么在index+old_length上，old_length为扩容前hashmap的长度。且在jdk1.8中不会出现环形链表的问题。但是jdk 1.8 的resize并发情况下有可能发生丢数据的问题。
+
+>②jdk1.8在hash碰撞后，一个node节点上挂载的点超过8个即转换成为treeNode节点。
 
 #### ConcurrentHashMap
 1. 是一个支持并发的HashMap容器。
@@ -153,6 +157,13 @@ HashSet主要利用HashMap来完成的，key为想存入的值，value默认给�
 - 同步块，锁的是()中的对象。
 
 实现原理：JVM是通过进入或者退出Monitor对象监视器来实现同步的。进入前调用monitor.enter指令，退出时调用monitor.exit指令。每一个对象都有一个Monitor对象监视器，所以说每个对象都能作为锁来实现同步。
+
+#### volatile和synchronized的区别
+1. volatile只能保证可见性，并不能保证原子性（轻量级锁）。synchronized可以保证可见性和原子性（重量级锁）。
+2. volatile可以修饰在字段上，synchronized只能修饰在方法或者代码段上。
+3. volatile不会造成线程阻塞，synchronized会造成线程阻塞。竞争同一把锁的情况下。
+
+在读取volatile变量时，应该会先刷新CPU缓存队列和失效队列，判断该值是否失效，如果失效，则从主内存中进行获取。普通变量应该是直接从工作内存中进行获取。
 
 
 #### 分布式锁

@@ -38,6 +38,18 @@ public class ConditionRouterTest {
 
     private URL SCRIPT_URL = URL.valueOf("condition://0.0.0.0/com.foo.BarService");
 
+    public static void main(String[] args) {
+        String a = "abc";
+        String b = new String("abc");
+        String c = new String("abc");
+        String d = "abc";
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c);
+        System.out.println(a == b);
+        System.out.println(a == d);
+    }
+
     @BeforeAll
     public static void setUpBeforeClass() throws Exception {
     }
@@ -48,6 +60,12 @@ public class ConditionRouterTest {
 
     private URL getRouteUrl(String rule) {
         return SCRIPT_URL.addParameterAndEncoded(Constants.RULE_KEY, rule);
+    }
+
+    @Test
+    public void testRoutePattern() {
+        ConditionRouter conditionRouter = new ConditionRouter(getRouteUrl(" host = 2.2.2.2 & host != 1.1.1.1 & method = hello"));
+        System.out.println(conditionRouter);
     }
 
     @Test
