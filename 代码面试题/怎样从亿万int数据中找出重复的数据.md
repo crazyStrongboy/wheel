@@ -8,6 +8,10 @@
  * 4. 取出byte[byteArrayIndex],查询当前byte的byteIndex索引位置是否已经填充值
  * 5. 用secondInts记录是否重复出现
  */
+/**
+ * @author mars_jun
+ * @version 2019/2/28 17:54
+ */
 public class BigMap {
 
     private static byte[] firstInts = new byte[1 << 29];
