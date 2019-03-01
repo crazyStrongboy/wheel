@@ -18,33 +18,37 @@
  */
 package org.apache.dubbo.demo.consumer;
 
-import org.apache.dubbo.config.ApplicationConfig;
-import org.apache.dubbo.config.ConsumerConfig;
-import org.apache.dubbo.config.ReferenceConfig;
-import org.apache.dubbo.config.RegistryConfig;
-import org.apache.dubbo.container.Main;
+import org.apache.dubbo.config.*;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.remoting.transport.mina.MinaTransporter;
+
+import java.io.IOException;
 
 public class Application {
     /**
      * In order to make sure multicast registry works, need to specify '-Djava.net.preferIPv4Stack=true' before
      * launch the application
      */
-    public static void main(String[] args) {
-        System.setProperty("java.net.preferIPv4Stack" , "true");
+    public static void main(String[] args) throws IOException {
+        System.setProperty("java.net.preferIPv4Stack", "true");
         ReferenceConfig<DemoService> reference = new ReferenceConfig<>();
-        reference.setApplication(new ApplicationConfig("dubbo-demo-api-consumer"));
+        ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-demo-api-consumer");
+        MonitorConfig monitorConfig = new MonitorConfig();
+        monitorConfig.setProtocol("registry");
+        applicationConfig.setMonitor(monitorConfig);
+        reference.setApplication(applicationConfig);
 //        reference.setRegistry(new RegistryConfig("multicast://224.5.6.7:1234?unicast=false"));
-//        reference.setRegistry(new RegistryConfig("zookeeper://192.168.0.191:2181"));
-        reference.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
+        reference.setRegistry(new RegistryConfig("zookeeper://192.168.0.191:2181"));
+//        reference.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));
         ConsumerConfig consumerConfig = new ConsumerConfig();
-        consumerConfig.setClient(MinaTransporter.NAME);
         reference.setConsumer(consumerConfig);
         reference.setInterface(DemoService.class);
         DemoService service = reference.get();
-        String message = service.sayHello("dubbo");
-        System.out.println(message);
+        for (int i = 0; i < 100; i++) {
+            String message = service.sayHello("dubbo"+i);
+            System.out.println(message);
+        }
+        System.in.read();
 
     }
 }
