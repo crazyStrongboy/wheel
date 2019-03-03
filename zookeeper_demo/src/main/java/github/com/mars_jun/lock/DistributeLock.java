@@ -16,16 +16,16 @@ import java.util.concurrent.locks.Lock;
  * @author mars_jun
  * @version 2019/3/3 14:35
  */
-public class DitributeLock implements Lock, Watcher {
+public class DistributeLock implements Lock, Watcher {
     private ZooKeeper zk;
     private String current;
     private String last;
     private static final String LOCK_PATH = "/locks";
     private CountDownLatch latch;
 
-    public DitributeLock() {
+    public DistributeLock() {
         try {
-            this.zk = new ZooKeeper("134.175.35.208:2181", 3000, this);
+            this.zk = new ZooKeeper("134.175.35.208:2181", 30000, this);
             Stat stat = zk.exists(LOCK_PATH, false);
             if (stat == null) {
                 zk.create(LOCK_PATH, "0".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
@@ -49,6 +49,7 @@ public class DitributeLock implements Lock, Watcher {
 
     private boolean waitLock(String last) {
         try {
+            System.out.println(Thread.currentThread().getName() + "-等待前面释放锁:" + last);
             Stat stat = zk.exists(last, true);
             if (stat == null) {
                 // TODO 这里可能会有问题,监听没成功也直接返回true了
@@ -56,7 +57,7 @@ public class DitributeLock implements Lock, Watcher {
             }
             latch = new CountDownLatch(1);
             latch.await();
-            System.out.println(Thread.currentThread().getName() + "-获取锁");
+            System.out.println(Thread.currentThread().getName() + "-获取锁:"+current);
         } catch (KeeperException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -71,11 +72,11 @@ public class DitributeLock implements Lock, Watcher {
 
     public boolean tryLock() {
         try {
-            current = zk.create(LOCK_PATH, "0".getBytes(), null, CreateMode.EPHEMERAL_SEQUENTIAL);
+            current = zk.create(LOCK_PATH + "/", "0".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
             List<String> children = zk.getChildren(LOCK_PATH, null);
             SortedSet<String> sortNodes = new TreeSet<String>();
             children.forEach(
-                    child -> sortNodes.add(child)
+                    child -> sortNodes.add(LOCK_PATH + "/" + child)
             );
             if (current.equals(sortNodes.first())) {
                 return true;
@@ -103,6 +104,9 @@ public class DitributeLock implements Lock, Watcher {
         try {
             zk.delete(current, -1);
             current = null;
+            last = null;
+            latch = null;
+            zk.close();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (KeeperException e) {

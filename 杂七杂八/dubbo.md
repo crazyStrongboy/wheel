@@ -59,3 +59,7 @@ jvm内部调用
 2. invoker === MockClusterInvoker
 3. 通过invoker创建代理服务进行调用。
 4. proxy0.sayHello() ===>handler.invoke()
+
+### 监控中心的使用流程？
+1. 源码分析
+2. 日志 权限（过滤器？）
