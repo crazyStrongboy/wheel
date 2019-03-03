@@ -35,7 +35,7 @@
 这一块到时候不定时的补充，后面会分类更加详细。
 
 ## hexo个人博客的一些优化
-1. [结合畅言打赏](https://github.com/crazyStrongboy/wheel/blob/master/%E5%8D%9A%E5%AE%A2%E7%9B%B8%E5%85%B3/hexo_next%E4%BC%98%E5%8C%96/%E7%BB%93%E5%90%88%E7%95%85%E8%A8%80%E6%89%93%E8%B5%8F.md")
+1. [结合畅言打赏](https://github.com/crazyStrongboy/wheel/blob/master/%E5%8D%9A%E5%AE%A2%E7%9B%B8%E5%85%B3/hexo_next%E4%BC%98%E5%8C%96/%E7%BB%93%E5%90%88%E7%95%85%E8%A8%80%E6%89%93%E8%B5%8F.md)
 
 
 ## 微信公众号（关注获取最新文章）
