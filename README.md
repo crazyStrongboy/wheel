@@ -24,7 +24,6 @@
 ### 基础知识复习
 - [JDK源码部分](https://github.com/crazyStrongboy/wheel/blob/master/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E9%9D%A2%E8%AF%95%E8%B5%84%E6%96%99/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%A4%8D%E4%B9%A0/jdk%E6%BA%90%E7%A0%81%E9%83%A8%E5%88%86.md "JDK源码部分")
 - [JVM部分](https://github.com/crazyStrongboy/wheel/blob/master/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E9%9D%A2%E8%AF%95%E8%B5%84%E6%96%99/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%A4%8D%E4%B9%A0/JVM%E9%83%A8%E5%88%86.md "JVM部分")
-- - [JDK源码部分](https://github.com/crazyStrongboy/wheel/blob/master/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E9%9D%A2%E8%AF%95%E8%B5%84%E6%96%99/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%A4%8D%E4%B9%A0/jdk%E6%BA%90%E7%A0%81%E9%83%A8%E5%88%86.md "JDK源码部分")
 - [Mysql部分](https://github.com/crazyStrongboy/wheel/blob/master/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%92%8C%E9%9D%A2%E8%AF%95%E8%B5%84%E6%96%99/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E5%A4%8D%E4%B9%A0/Mysql%E9%83%A8%E5%88%86.md "Mysql部分")
 
 ### TCP-IP相关
