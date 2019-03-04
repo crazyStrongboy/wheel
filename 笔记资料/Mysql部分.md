@@ -6,7 +6,14 @@
 2. 索引可以把随机IO变成顺序IO
 3. 索引可以帮助我们在分组，排序等操作时，避免使用临时表
 
-B+tree（加强版多路平衡查找树） : 均会指向叶子节点去获取数据。稳定性~
+### 为什么数据库索引要用B+tree?
+- 普通的Tree : 可能出现一个分支过长，检索过深。
+- 平衡二叉树：一个节点只能存储一个索引（没有利用到磁盘IO的数据交换特性），然后检索也会很深。
+- 多路平衡查找tree: 数据区和索引存储在一个节点上。
+- B+tree（加强版多路平衡查找树）：叶子节点才存储数据区，其他节点仅记录索引，子节点的引用和操作锁的一些功能。
+
+B+tree（加强版多路平衡查找树）: 主键会指向叶子节点去获取数据。叶子节点是顺序排列的，且相邻节点具有引用顺序关系。这样磁盘的读写能力更强。它拥有B-tree的优势，扫表，库以及排序能力更强，还具有稳定性~
+
 ### 主键索引与辅助索引
 - MyISAM引擎的索引和数据是分文件存储的。主键索引和辅助索引均指向数据的地址值。
 - InnoDB引擎的索引和数据是存储在一个文件的。辅助索引依赖主键索引（主键索引指向数据的地址值），这样数据迁移时无需关注辅助索引。
@@ -113,12 +120,9 @@ Mysql5.5版本以后的默认存储引擎
 - MyISAM是表级锁，InnoDB是行级锁。
 - MyISAM读很快。InnoDB写效率高。
 - MyISAM索引与数据分开存储，InnoDB索引与数据存储在一个文件中。
-- MyISAM的索引叶子存储指针，主键索引与普通索引无太大区别
-- InnoDB的聚集索引和数据行统一存储
-- InnoDB的聚集索引存储数据行本身，普通索引存储主键
-- InnoDB一定有且只有一个聚集索引
+- MyISAM的索引叶子存储指针，主键索引与普通索引无太大区别；InnoDB的聚集索引存储数据行本身，普通索引存储主键，InnoDB一定有且只有一个聚集索引
 - InnoDB建议使用趋势递增整数作为PK，而不宜使用较长的列作为PK
-- InnoDB对一行数据的读不会加锁，实际上读的是副本。
+- InnoDB对一行数据的读不会加锁，实际上读的是副本（快照）。
 
 ## Mysql查询优化
 
@@ -126,6 +130,7 @@ Mysql5.5版本以后的默认存储引擎
 Mysql客户端与服务端之间的通信采用半双工的方式。
 
 限制：
+
 - 客户端一旦开始发送消息，另一端要接受完消息才能开始响应。
 - 客户端一旦开始接收指令，就没办法发送指令。
 
@@ -227,10 +232,10 @@ show status like 'Qcache%' 命令可以查询缓存情况
 ## 事务
 
 ### 事务的四大特性
-- 原子性：最小的工作单元，整个工作单元要么一次性成功，要么一次性失败
-- 一致性：执行的结果必须完全符合预设规则
-- 隔离性：一个事务在提交之前，对其他事务可见性的设定
-- 持久性：事务所做的修改会永远保存，数据不会丢失
+- 原子性（Atomicity）：最小的工作单元，整个工作单元要么一次性成功，要么一次性失败
+- 一致性（Consistency）：执行的结果必须完全符合预设规则
+- 隔离性（Isolation）：一个事务在提交之前，对其他事务可见性的设定
+- 持久性（Durability）：事务所做的修改会永远保存，数据不会丢失
 
 ### 隔离级别
 1. Read Uncommitted-未提交读：**什么都不解决**
@@ -279,7 +284,7 @@ show status like 'Qcache%' 命令可以查询缓存情况
 >当sql执行按照唯一性（Primary key、Unique key）索引进行数据的检索时，查询条件等值匹配且查询的数据是存在，这时SQL语句加上的锁即为记录锁Record locks，锁住具体的索引项
 #### 间隙锁(Gap Locks)
 >临键锁可降级为间隙锁。锁住索引不存在的区间（左开右闭）
-#### 临键锁（Next-key Locks）==> 行锁的默认算法
+#### 临键锁（Next-key Locks）==> 行锁的默认算法(是记录数和间隙锁的组合)
 >当sql执行按照索引进行数据的检索时,查询条件为范围查找（between and、<、>等）并有数据命中则此时SQL语句加上的锁为Next-key locks，锁住索引记录+区间（左开右闭原则）
 
 ### 死锁介绍
@@ -292,3 +297,64 @@ show status like 'Qcache%' 命令可以查询缓存情况
 - 在同一个事务中，尽可能的多锁定一些资源
 - 降低隔离级别
 - 为表添加合适的索引
+
+## MVCC
+Mysql的MVCC是在Innodb引擎中支持的，Innodb为每行记录增加了三个字段：
+
+- 6个字节的事务ID（DB\_TRX\_ID）
+- 7字节的回滚指针（DB\_ROLL\_PTR）
+- 隐藏的ID
+
+**进行操作时，会给每个session都分配一个事务ID。**
+
+MVCC有以下几个特点:
+
+- 每行数据上都有数据行版本号：新增或者update时会改变这个版本号
+- 每行数据上都有删除版本号：删除时会改变这个版本号
+
+### Undo
+> 进行更新操作后，还没commit，这样读取的行会存储一份到undo buffer中，作为快照，防止进行修改时排他锁限制后无法读取的情况，undo buffer最后会根据策略刷入硬盘。
+### Redo（事务的提交）
+> 在进行commit后，不会直接写入到数据库中，毕竟更新的数据在磁盘是不连续的，如果直接入库会导致多次寻址。这里我们redo帮我们解决这个问题，commit后数据行会被写入到redo buffer中，redolog是可以顺序写的，redo buffer最后会根据策略刷入硬盘中。
+
+#### Redo的一些配置
+- 可通过innodb\_log\_group\_home\_dir配置指定目录存储，{datadir}/ib\_logfile1&ib\_logfile2
+- redo log的写入是循环写入的，数量innodb\_log\_files\_in\_group默认为2
+- 最大存储量innodb_log\_file\_size 默认48M
+- cache/buffer 中的buffer 池大小innodb_log\_buffer\_size默认16M
+- 持久化策略，innodb\_flush\_log\_at\_trx\_commit 取值0：每秒都刷到硬盘 1：每次提交事务都刷到硬盘
+2： 事务提交到buffer，过一秒后刷到硬盘
+
+### rollback segmengt
+>在Innodb中，undo log会被分为多个段，其中有个段就是回滚段，用来处理事务的回滚。
+
+### 快照读
+>SQL读取的数据是快照版本，也就是历史版本，普通的select就是快照读。读取的实际上是undo里面缓存的版本。
+### 当前读
+>SQL读取的是最新版本，通过锁机制来保证读取的数据其他事物无法进行修改。
+
+例如：SELECT … LOCK IN SHARE MODE 、SELECT … FOR UPDATE 等等都是当前读。
+
+## 其他信息（不定时补充）
+### 数据库三范式
+- 每一列都只能是单一的值，不能再切分
+- 每一行都要有主键进行区分
+- 每个表都不能包含其他表除了主键外的其他字段
+
+
+### 查询配置文件
+mysql --help 寻找配置文件的位置和加载顺序：
+
+**Default options are read from the following files in the given order:
+/etc/my.cnf /etc/mysql/my.cnf /usr/etc/my.cnf ~/.my.cnf**
+
+mysql --help | grep -A 1 'Default options are read from the following
+files in the given order'
+
+### 最大连接数配置
+- my.cnf : max\_connections(配置文件中)
+- /etc/security/limits.conf  查询：ulimit -a（系统句柄数配置）
+- /usr/lib/systemd/system/mysqld.service （mysql句柄数配置）
+
+
+
