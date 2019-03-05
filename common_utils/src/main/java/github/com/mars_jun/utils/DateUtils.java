@@ -1,4 +1,4 @@
-package github.com.crazyStrongboy.utils;
+package github.com.mars_jun.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

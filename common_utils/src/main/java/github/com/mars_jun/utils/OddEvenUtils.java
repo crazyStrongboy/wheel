@@ -1,4 +1,4 @@
-package github.com.crazyStrongboy.utils;
+package github.com.mars_jun.utils;
 
 public class OddEvenUtils {
     /**

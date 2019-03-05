@@ -1,4 +1,4 @@
-package github.com.crazyStrongboy.utils.jdk1_8_stream_test;
+package jdk1_8_stream_test;
 
 import java.util.ArrayList;
 
