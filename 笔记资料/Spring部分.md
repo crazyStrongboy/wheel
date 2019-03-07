@@ -34,6 +34,7 @@ DI：依赖注入，简单的来说就是去被依赖注入的一方去IOC容器
 7. 实现了DisposableBean接口,则spring容器关闭时，执行destory方法 。
 
 
+
  ![](https://i.imgur.com/bq2thqN.png)
 
 ## Spring bean的5中scope
@@ -43,3 +44,21 @@ DI：依赖注入，简单的来说就是去被依赖注入的一方去IOC容器
 4. session:每次http请求你都会产生一个新的实例，仅在该会话中有效。
 5. global-session:如果你在 web 中使用 global session 作用域来标识 bean，那么 web 会自动当成 session 类型来使用。
 
+## Spring AOP的实现
+在通过getBean去获取bean的过程中，在creatBean方法里面有这样一个代码段：
+
+`
+
+// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.
+			
+Object bean = resolveBeforeInstantiation(beanName, mbdToUse);
+
+`
+
+如果这个类是一个需要增强的类，则会通过动态代理的方式去生成一个加强类。有接口实现则用jdk默认的代理实现，没有实现接口则用Cglib去实现，Cglib实际上就是生成了一个被实现类的子类，然后调用父类方法。
+
+
+## SpringMVC 实现原理
+![](https://i.imgur.com/dt2fH5U.png)
+
+在第四步过程中，还包括参数的解析过程，并通过反射调用method方法。
