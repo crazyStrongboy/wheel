@@ -35,3 +35,9 @@ myid可以自定义，但是每个zookeeper的配置的不能相同。
 ## 深入分析zookeeper的实现原理
 
 ### Zab协议
+
+选举流程：
+
+1. epoch 最大优先
+2. epoch相等，zxid 优先（高位为epoch，低位为事务id，每次高位+1，低位都从0开始计数）
+3. 上面两个都相等，最后判断server.id  
