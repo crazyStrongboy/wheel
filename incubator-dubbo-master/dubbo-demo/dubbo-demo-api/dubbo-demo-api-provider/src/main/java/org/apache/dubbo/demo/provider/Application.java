@@ -18,10 +18,7 @@
  */
 package org.apache.dubbo.demo.provider;
 
-import org.apache.dubbo.config.ApplicationConfig;
-import org.apache.dubbo.config.MonitorConfig;
-import org.apache.dubbo.config.RegistryConfig;
-import org.apache.dubbo.config.ServiceConfig;
+import org.apache.dubbo.config.*;
 import org.apache.dubbo.demo.DemoService;
 
 public class Application {
@@ -32,11 +29,14 @@ public class Application {
     public static void main(String[] args) throws Exception {
         System.setProperty("java.net.preferIPv4Stack" , "true");
         ServiceConfig<DemoServiceImpl> service = new ServiceConfig<>();
+        ProviderConfig providerConfig = new ProviderConfig();
+//        providerConfig.setServer("mynetty");
         ApplicationConfig applicationConfig = new ApplicationConfig("dubbo-demo-api-provider");
         MonitorConfig monitorConfig = new MonitorConfig();
         monitorConfig.setProtocol("registry");
         applicationConfig.setMonitor(monitorConfig);
         service.setApplication(applicationConfig);
+        service.setProvider(providerConfig);
 //        service.setRegistry(new RegistryConfig("multicast://224.5.6.7:1234?unicast=false"));
         service.setRegistry(new RegistryConfig("zookeeper://192.168.0.191:2181"));
 //        service.setRegistry(new RegistryConfig("zookeeper://134.175.35.208:2181"));

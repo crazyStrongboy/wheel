@@ -667,6 +667,9 @@ public class ExtensionLoader<T> {
     }
 
     private void loadDirectory(Map<String, Class<?>> extensionClasses, String dir, String type) {
+        if (type.contains("Transporter")){
+            System.out.println("断点");
+        }
         String fileName = dir + type;
         try {
             Enumeration<java.net.URL> urls;
