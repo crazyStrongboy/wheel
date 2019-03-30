@@ -205,3 +205,5 @@ HashSet主要利用HashMap来完成的，key为想存入的值，value默认给�
 > tryLock()：如果是当前线程获取锁或者锁是空闲状态，直接返回true。如果是其他线程持有锁，则在进行一系列尝试后返回false。
 
 ----------
+
+#### LongAdder
