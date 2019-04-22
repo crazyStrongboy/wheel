@@ -1,0 +1,18 @@
+搭建高可用的注册中心
+1.eureka.client.serviceUrl.defaultZone配置的地址,不能使用localhost,需要使用域名,这里可以自己到hosts中配置域名解析
+  eg:  127.0.0.1 test1
+       127.0.0.1 test2
+2.spring:
+    application:
+      name: spring-cloud-eureka #这里的应用名需要一致
+3.eureka:
+    client:
+      register-with-eureka: true #需要配置true,默认true,单机时配置成false,表示不向自身注册
+      fetch-registry:  true  #需要配置成true,默认true.该配置为定时去拉取注册节点
+4.eureka:
+    instance:
+      hostname: test1  #同一台机器下需要配置域名,不同机器可配置ip
+5.eureka:
+   instance:
+     prefer-ip-address: false #配置高可用的时,该配置项需为false,默认false
+#defaultZone中是以域名的方式向注册中心注册的（测试了下使用IP注册到备份节点不可识别）,所以步骤4在高可用情况下需要配置为域名.

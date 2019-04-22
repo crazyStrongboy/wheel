@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: application
+  cloud:
+    config:
+      discovery:
+        service-id: myserver
+        enabled: true
+      profile: dev
+
+server:
+  port: 8004
+eureka:
+  instance:
+    hostname: TTT-HJ
+    instance-id: ${spring.application.name}:${server.port}
+  client:
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8000/eureka/
+    fetch-registry: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,info,health
