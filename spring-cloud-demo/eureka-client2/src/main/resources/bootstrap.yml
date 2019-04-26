@@ -7,7 +7,14 @@ spring:
         service-id: myserver
         enabled: true
       profile: dev
-
+    bus:
+      destination: "bus-test"
+  rabbitmq:
+    host: 10.104.6.84
+    port: 5672
+    username: sis-user
+    password: sis-user
+    virtual-host: sis-vh
 server:
   port: 8004
 eureka:
@@ -23,4 +30,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh,info,health
+        include: refresh,info,health,mappings

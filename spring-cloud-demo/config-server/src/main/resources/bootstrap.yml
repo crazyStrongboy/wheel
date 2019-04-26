@@ -5,8 +5,19 @@ spring:
         git:
           uri: https://github.com/crazyStrongboy/config/
           searchPaths: foo
+    bus:
+      destination: "bus-test"
+      trace:
+        enabled: true
+
   application:
     name:  myserver
+  rabbitmq:
+    host: 10.104.6.84
+    port: 5672
+    username: sis-user
+    password: sis-user
+    virtual-host: sis-vh
 server:
   port:  8003
 eureka:
@@ -17,3 +28,12 @@ eureka:
     fetch-registry: false
     service-url:
       defaultZone: http://${eureka.instance.hostname}:8000/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,info,health,mappings,bus-refresh
+#logging:
+#  level:
+#    "*": DEBUG
