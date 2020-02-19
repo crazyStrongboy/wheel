@@ -126,7 +126,7 @@ Mysql5.5版本以后的默认存储引擎
 - 索引与数据存储在一个文件中（ibd文件）
 
 
-#### [MyISAM和InnoDB的区别](https://mp.weixin.qq.com/s/FUXPXKfKyjxAvMUFHZm9UQ)？
+### [MyISAM和InnoDB的区别](https://mp.weixin.qq.com/s/FUXPXKfKyjxAvMUFHZm9UQ)？
 - MyISAM是表级锁，InnoDB是行级锁。
 - MyISAM读很快。InnoDB写效率高。
 - MyISAM索引与数据分开存储，InnoDB索引与数据存储在一个文件中。
@@ -215,9 +215,10 @@ show status like 'Qcache%' 命令可以查询缓存情况
 #### 执行计划 Extra
 1. Using filesort: mysql使用了一个外部的文件对内容进行了排序，而不是按表内的索引进行排序
 2. Using temporary: 使用临时表保存中间结果，常见于group by和order by
-3. Using index:相应的sql使用到了覆盖索引，避免了访问表的数据行
+3. Using index:   相应的sql使用到了覆盖索引，避免了访问表的数据行
 4. Using where： 用了where条件语句
 5. select tables optimized away: 基于索引优化的min和max操作或者MYISAM存储引擎的select count(*),不必等到执行阶段再进行计算
+6. Using index condition: 用到了索引下推，在存储引擎层进行数据的过滤
 
 ### 返回客户端
 - 有需要做缓存的先执行缓存操作
@@ -226,7 +227,8 @@ show status like 'Qcache%' 命令可以查询缓存情况
 ### 如何定位SQL执行慢
 - 业务驱动
 - 测试驱动
-- 慢查询日志
+- 慢查询日志：使用mysqldumpslow 工具去分析。
+- show profiles去分析
 
 慢查询日志基本操作：
 >show variables like 'slow\_query\_log'
@@ -323,7 +325,7 @@ Mysql的MVCC是在Innodb引擎中支持的，Innodb为每行记录增加了三�
 
 - 6个字节的事务ID（DB\_TRX\_ID）
 - 7字节的回滚指针（DB\_ROLL\_PTR）
-- 隐藏的ID
+- 隐藏的ID（ROWID）
 
 **进行操作时，会给每个session都分配一个事务ID。**
 
