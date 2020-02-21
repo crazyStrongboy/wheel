@@ -33,6 +33,7 @@ Docker是一个供我们开发、发布、运行app的开放平台，它能够�
 13. docker inspect bridge：查看桥接网络 
 14. docker logs 【容器名或者ID】：查看日志
 15. docker commit：由container生成image
+16. docker network：操作网络相关的
 
 
 
@@ -41,6 +42,21 @@ Docker是一个供我们开发、发布、运行app的开放平台，它能够�
 ### Dockerfile
 
 执行docker build dockerfile，生成image
+
+```dockerfile
+#Dockerfile
+From ubuntu
+
+Copy main helloworld
+
+Run chmod 755 helloworld
+
+CMD ["./helloworld"]
+```
+
+
+
+
 
 
 
