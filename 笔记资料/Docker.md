@@ -34,6 +34,7 @@ Docker是一个供我们开发、发布、运行app的开放平台，它能够�
 14. docker logs 【容器名或者ID】：查看日志
 15. docker commit：由container生成image
 16. docker network：操作网络相关的
+17. docker volume ls：查看挂载卷
 
 
 
@@ -83,3 +84,27 @@ CMD ["./helloworld"]
 #### Null
 
 #### Overlay：多机网络通讯
+
+
+
+
+
+### 数据持久化
+
+docker -v 宿主机：容器
+
+
+
+### percona-xtradb-cluster
+
+1. docker pull percona/percona-xtradb-cluster:5.7
+2. docker tag percona/percona-xtradb-cluster:5.7 pxc
+3. 创建一个桥接网卡：docker network create  --subnet 172.19.0.0/24 pxc-net
+4. 创建几个volume：
+   1. docker volume create v1
+   2. docker volume create v2
+   3. docker volume create v3
+5. 创建容器：
+   1. docker run -d -p 3301:3306 --name mysql01 -v v1:/var/lib/mysql --privileged -e MYSQL_ROOT_PASSWORD=123456 -e XTRABACKUP_PASSWORD=123456  --network pxc-net -e CLUSTER_NAME=cluster-demo --ip 172.19.0.2 pxc
+   2. docker run -d -p 3302:3306 --name mysql02 -v v2:/var/lib/mysql --privileged -e MYSQL_ROOT_PASSWORD=123456 -e XTRABACKUP_PASSWORD=123456  --network pxc-net -e CLUSTER_NAME=cluster-demo --ip 172.19.0.3  -e CLUSTER_JOIN=mysql01 pxc
+   3. docker run -d -p 3303:3306 --name mysql03 -v v3:/var/lib/mysql --privileged -e MYSQL_ROOT_PASSWORD=123456 -e XTRABACKUP_PASSWORD=123456  --network pxc-net -e CLUSTER_NAME=cluster-demo --ip 172.19.0.4  -e CLUSTER_JOIN=mysql01  pxc
