@@ -2,6 +2,48 @@
 
 Docker是一个供我们开发、发布、运行app的开放平台，它能够帮助我们轻松的从基础实施上隔离应用。可以用Docker实现像管理程序一样去管理我们的基础设施。
 
+### Docker的安装
+
+1. ```
+   sudo yum remove docker \
+                     docker-client \
+                     docker-client-latest \
+                     docker-common \
+                     docker-latest \
+                     docker-latest-logrotate \
+                     docker-logrotate \
+                     docker-engine
+   ```
+
+2. ```
+    sudo yum install -y yum-utils \
+     device-mapper-persistent-data \
+     lvm2
+   ```
+
+3. ```
+   sudo yum-config-manager \
+       --add-repo \
+       https://download.docker.com/linux/centos/docker-ce.repo
+   ```
+
+4. ```
+   sudo yum install docker-ce docker-ce-cli containerd.io
+   ```
+
+5. ```
+   sudo mkdir -p /etc/docker
+   sudo tee /etc/docker/daemon.json <<-'EOF'
+   {
+     "registry-mirrors": ["https://6o75za5h.mirror.aliyuncs.com"]
+   }
+   EOF
+   sudo systemctl daemon-reload
+   sudo systemctl restart docker
+   ```
+
+
+
 
 
 ### 镜像（Docker Hub），容器
@@ -111,7 +153,7 @@ docker -v 宿主机：容器
 
 
 
-### haproxy
+### haproxy(mysql代理)
 
 ```
 global
@@ -177,7 +219,13 @@ defaults
   - docker exec -it haproxy01 bash 
   - haproxy -f /usr/local/etc/haproxy/haproxy.cfg 
 
+
+
+
+
 ### 容器编排工具
 
 1. 单机编排：docker compose
 2. 多机编排：docker swarm、 mesos、 kubernets
+   - 多台安装了Docker的机器，组成一个集群，共同给外界提供服务，并且能够很好的管理多个容器。
+
