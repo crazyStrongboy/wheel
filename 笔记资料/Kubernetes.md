@@ -274,9 +274,57 @@ w2     Ready    <none>   74s     v1.14.0
 
 
 
+### 简单的测试
 
+#### 定义一个简单的nginx pod文件
 
+比如pod_nginx_rs.yaml
 
+```yml
+cat > pod_nginx_rs.yaml <<EOF
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: nginx
+  labels:
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      name: nginx
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+EOF
+```
+
+#### 根据pod_nginx_rs.yml文件创建pod
+
+> kubectl apply -f pod_nginx_rs.yaml
+
+#### 查看Pod
+
+> kubectl get pods
+> kubectl get pods -o wide
+> kubectl describe pod nginx
+
+#### 感受通过rs将pod扩容
+
+> kubectl scale rs nginx --replicas=5
+> kubectl get pods -o wide
+
+#### 删除pod
+
+> kubectl delete -f pod_nginx_rs.yaml
 
 ### Pod
 
