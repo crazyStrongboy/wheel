@@ -326,7 +326,18 @@ EOF
 
 > kubectl delete -f pod_nginx_rs.yaml
 
+
+
+## 标签的理解
+
 ### Pod
+
+1. 每个pod中都有一个pause container容器，后面所有加进来的容器都会链接到这个容器中。
+2. pod之间的通讯
+   - 不同node上的pod
+   - 同一台node上的pod
+
+### ReplicaController
 
 ### ReplicaSet
 
@@ -339,3 +350,5 @@ EOF
 ### Node
 
 ### Kubectl
+
+### Ingress
