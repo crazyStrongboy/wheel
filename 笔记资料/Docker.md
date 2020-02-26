@@ -99,7 +99,13 @@ CMD ["./helloworld"]
 
 
 
+#### Run、CMD、ENTRYPOINT 三者区别
 
+1. Run： The `RUN` instruction will execute any commands in a new layer on top of the current image and commit the results. The resulting committed image will be used for the next step in the `Dockerfile`.
+2. CMD：There can only be one `CMD` instruction in a `Dockerfile`. If you list more than one `CMD` then only the last `CMD` will take effect.**The main purpose of a CMD is to provide defaults for an executing container.** 
+3. ENTRYPOINT：Command line arguments to `docker run <image>` will be appended after all elements in an *exec* form `ENTRYPOINT`, and will override all elements specified using `CMD`. Only the last `ENTRYPOINT` instruction in the `Dockerfile` will have an effect.
+
+简单的来说，`Run`指令在docker build时便会去执行相应指令。而 `CMD` 与`ENTRYPOINT`都是在docker run时才会去执行，并且这两个指令都只会有最后一个生效。这两个指令的不同点是 `CMD` 中的参数会被docker run后面的参数给覆盖掉，而`ENTRYPOINT`则不会，docker run后面的参数会被追加到`ENTRYPOINT`参数后面。
 
 
 
