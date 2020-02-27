@@ -1,6 +1,6 @@
 ### Pod
 
-pod的生命周期：
+#### pod的生命周期
 
 | Value       | Description                                                  |
 | :---------- | :----------------------------------------------------------- |
@@ -10,18 +10,21 @@ pod的生命周期：
 | `Failed`    | All Containers in the Pod have terminated, and at least one Container has terminated in failure. That is, the Container either exited with non-zero status or was terminated by the system. |
 | `Unknown`   | For some reason the state of the Pod could not be obtained, typically due to an error in communicating with the host of the Pod. |
 
-1. 每个pod中都有一个pause container容器，后面所有加进来的容器都会链接到这个容器中。所以同一个pod中的所有container共享同一个网络。
-2. pod之间的通讯
-   - 不同node上的pod
-   - 同一台node上的pod
+#### Pod的网络
 
-查询pod：
+- 每个pod中都有一个pause container容器，后面所有加进来的容器都会链接到这个容器中。所以同一个pod中的所有container共享同一个网络。
+
+- 不同pod直接通过网络插件进行通讯。
+
+#### 查询pod
 
 - `kubectl get pods --all-namespaces`查询所有名称空间下的pod
 - `kubectl get pods  -n  xxx` 查询xxx名称空间下的pod，不加上-n参数表示查询默认空间
 - `kubectl describe pod pod-name -n xxx`查询pod的详细信息
 
-创建pod：`kubectl apply -f nginx-pod.yaml`
+#### 创建pod
+
+指令：`kubectl apply -f nginx-pod.yaml`
 
 ```yaml
 apiVersion: v1
@@ -36,7 +39,15 @@ spec:
     - containerPort: 80
 ```
 
+#### Pod重启策略（restartPolicy）
 
+- Always：容器失效就重启。默认值。
+- OnFailure：非正常退出就重启。
+- Never：永远不重启。
+
+#### 静态Pod
+
+由kubelet单独去管理的
 
 ### ReplicaController
 
@@ -136,6 +147,8 @@ Delete：表示删除PVC的时候，PV也会一起删除，同时也删除PV所�
 ### StorageClass
 
 
+
+### ConfigMap
 
 
 
