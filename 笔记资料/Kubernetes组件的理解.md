@@ -1,3 +1,5 @@
+## 标签
+
 ### Pod
 
 #### pod的生命周期
@@ -189,19 +191,59 @@ Delete：表示删除PVC的时候，PV也会一起删除，同时也删除PV所�
 
 ### ConfigMap
 
-
+## 组件
 
 ### Scheduler
 
+- 预选策略
+- 优选策略
 
+### Kube-apiserver
 
 ### Kubectl
 
 ### Kubelet
 
+1. 每个node节点上都有的进程，用于处理master节点下发到当前节点的任务。
+2. 管理pod以及容器，kubelet进程会在apiserver上注册节点的自身信息，包括资源的使用情况等等。
+
+
+
 ### Kubeadm
 
+### 注册中心
 
+ETCD
+
+## K8s解决方案
+
+### Rancher
 
 多个replicas的mysql如何挂载volume?
 
+
+
+
+
+## 部署策略
+
+- 滚动更新：部分停止并更新，直到所有都更新完成
+- 重新创建：停掉所有的老版本，再重新部署新版本
+- 蓝绿部署：无需停止服务，风险较小
+- 金丝雀部署【AB测试】：只更新部分，新老版本共存
+
+
+
+## ServiceMesh
+
+
+
+## Istio
+
+CNCF：Cloud Native Computing Foundation
+
+
+
+### Sidecar
+
+Envoy：c++开发的一个高性能的代理组件，
