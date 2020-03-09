@@ -219,10 +219,6 @@ ETCD
 
 ### Rancher
 
-多个replicas的mysql如何挂载volume?
-
-
-
 
 
 ## 部署策略
@@ -246,4 +242,10 @@ CNCF：Cloud Native Computing Foundation
 
 ### Sidecar
 
-Envoy：c++开发的一个高性能的代理组件，
+Envoy：c++开发的一个高性能的代理组件
+
+
+
+
+
+# 多个replicas的mysql如何挂载volume?
