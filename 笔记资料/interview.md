@@ -83,7 +83,7 @@ runtime.entersyscall函数会立刻返回，它仅仅是起到一个通知的作
 
 topic这一类的消息，可能有多个partition，然后每个partition会有多个副本，这里副本会选举出一个leader，然后读取和写入都是通过leader来实现的，这就实现了强一致性的CP。如果leader出了问题，则会从isr列表中重新选举出一个leader。
 
-**ISR列表**：leader会扫描ISR列表（in sync）中的follower。如果一个follower宕机了，leader将会将其从ISR列表中移除掉，判断标准是follow复制的消息数落后于leader的条数的预期值。这个值由属性`replica.lag.max.messages`和`replica.lag.time.max.ms`，前者控制消息条数，后者控制多久没进行复制消息了。
+**ISR列表**：leader会扫描ISR列表（in sync replica）中的follower。如果一个follower宕机了，leader将会将其从ISR列表中移除掉，判断标准是follow复制的消息数落后于leader的条数的预期值。这个值由属性`replica.lag.max.messages`和`replica.lag.time.max.ms`，前者控制消息条数，后者控制多久没进行复制消息了。
 
 **消息的复制**：一条消息只有被ISR列表中的所有follower都复制过去后才会被认为已经提交，这样避免数据的丢失，对于producer而言，只用保证达到配置`request.required.acks`数的消息被复制后，就认为该消息已经commit了。
 
@@ -94,3 +94,9 @@ brocker集群通过向zookeeper注册临时节点/Controller，来选举出Contr
 
 
 #### Kafka与RabbitMQ对比
+
+kafka不支持优先级队列，延迟队列，死信队列，重试队列，消息追踪。但是支持消息回溯，通过offset进行偏移量的设置，重新消费消息。单分区内支持顺序性。消费消息只支持拉模式。支持持久化。特定协议。
+
+
+
+rabbitMQ支持优先级队列，延迟队列，死信队列，重试队列，消息追踪。不支持消息回溯，基本不支持消息的顺序性。消费模式支持推和拉两种模式。支持持久化。本身由AMQP协议实现，同时支持MQTT、STOMP协议。
