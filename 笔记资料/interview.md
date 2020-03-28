@@ -17,7 +17,7 @@
 6. 把加密后的信息返回给客户端
 7. 客户端通过之前的随机值进行解密。
 
-#### mongo和redis对比
+#### mongo和redis、Memcached对比
 
 #### consul与zookeeper对比
 
@@ -29,7 +29,9 @@
 
 #### 用户量很大，但是很多都是僵尸用户，常用保活就行，要针对高频用户分配多个goroutine该怎么去处理？
 
+使用linux epoll机制即可。
 
+ 
 
 #### cgo和普通函数的区别？
 
@@ -65,10 +67,30 @@ runtime.entersyscall函数会立刻返回，它仅仅是起到一个通知的作
 
 
 
+#### Redis集群
+
+
+
 #### mongodb分片
 
 
 
 
 
-#### 开放 进取 极致 终生学习
+#### Kafka备份和容灾
+
+##### 备份
+
+topic这一类的消息，可能有多个partition，然后每个partition会有多个副本，这里副本会选举出一个leader，然后读取和写入都是通过leader来实现的，这就实现了强一致性的CP。如果leader出了问题，则会从isr列表中重新选举出一个leader。
+
+**ISR列表**：leader会扫描ISR列表（in sync）中的follower。如果一个follower宕机了，leader将会将其从ISR列表中移除掉，判断标准是follow复制的消息数落后于leader的条数的预期值。这个值由属性`replica.lag.max.messages`和`replica.lag.time.max.ms`，前者控制消息条数，后者控制多久没进行复制消息了。
+
+**消息的复制**：一条消息只有被ISR列表中的所有follower都复制过去后才会被认为已经提交，这样避免数据的丢失，对于producer而言，只用保证达到配置`request.required.acks`数的消息被复制后，就认为该消息已经commit了。
+
+##### 容灾
+
+brocker集群通过向zookeeper注册临时节点/Controller，来选举出Controller，并且每个broker都会监听该节点，通过临时节点的变动来决定是否进行Controller的选举。Controller宕机，触发其他broker进行Controller的重新选举。如果宕机的broker上有leader partition，则会重新从ISR选举出对应partition的leader，将其信息写入broker的state节点。
+
+
+
+#### Kafka与RabbitMQ对比
